@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SRS Weather Station</string>
+    <string name="widget_label">SRS Main Station</string>
+
+</resources>

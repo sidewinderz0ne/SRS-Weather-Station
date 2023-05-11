@@ -1,0 +1,202 @@
+<!-- weather_widget_layout.xml -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="400dp"
+    android:layout_height="200dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:background="@color/black_trans"
+        android:backgroundTint="@color/black_trans"
+        app:cardCornerRadius="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/weatherIcon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/ic_baseline_wb_sunny_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/weatherTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:text="34"
+                android:textColor="@android:color/white"
+                android:textSize="84sp"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherIcon"
+                app:layout_constraintStart_toEndOf="@+id/weatherIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/degree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="°"
+                android:textColor="@color/white"
+                android:textSize="70sp"
+                app:layout_constraintStart_toEndOf="@+id/weatherTemperature"
+                app:layout_constraintTop_toTopOf="@+id/weatherTemperature" />
+
+            <ImageView
+                android:id="@+id/ic_rain"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/rain"
+                app:layout_constraintStart_toEndOf="@+id/weatherTemperature"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/ic_hum"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/ic_baseline_humidity_24"
+                app:layout_constraintStart_toEndOf="@+id/weatherTemperature"
+                app:layout_constraintTop_toBottomOf="@+id/ic_rain"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/ic_wind"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/ic_baseline_wind_24"
+                app:layout_constraintStart_toEndOf="@+id/weatherTemperature"
+                app:layout_constraintTop_toBottomOf="@+id/ic_hum"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/rainfallRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/weatherIcon"
+                android:layout_marginLeft="10dp"
+                android:text="99"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ic_rain"
+                app:layout_constraintStart_toEndOf="@+id/ic_rain"
+                app:layout_constraintTop_toTopOf="@+id/ic_rain" />
+
+            <TextView
+                android:id="@+id/rainUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/weatherIcon"
+                android:layout_marginLeft="5dp"
+                android:text="mm/hr"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ic_rain"
+                app:layout_constraintStart_toEndOf="@+id/rainfallRate"
+                app:layout_constraintTop_toTopOf="@+id/ic_rain" />
+
+            <TextView
+                android:id="@+id/humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/weatherIcon"
+                android:layout_marginLeft="10dp"
+                android:text="99"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ic_hum"
+                app:layout_constraintStart_toEndOf="@+id/ic_hum"
+                app:layout_constraintTop_toTopOf="@+id/ic_hum" />
+
+            <TextView
+                android:id="@+id/humUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/weatherIcon"
+                android:layout_marginLeft="5dp"
+                android:text="%"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/humidity"
+                app:layout_constraintStart_toEndOf="@+id/humidity"
+                app:layout_constraintTop_toTopOf="@+id/humidity" />
+
+            <TextView
+                android:id="@+id/windSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/weatherIcon"
+                android:layout_marginLeft="10dp"
+                android:text="99"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ic_wind"
+                app:layout_constraintStart_toEndOf="@+id/ic_wind"
+                app:layout_constraintTop_toTopOf="@+id/ic_wind" />
+
+            <TextView
+                android:id="@+id/windUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/weatherIcon"
+                android:layout_marginLeft="5dp"
+                android:text="km/hr"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/windSpeed"
+                app:layout_constraintStart_toEndOf="@+id/windSpeed"
+                app:layout_constraintTop_toTopOf="@+id/windSpeed" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/humidity"
+                android:layout_marginLeft="35dp"
+                android:layout_marginBottom="15dp"
+                android:layout_toEndOf="@id/windSpeed"
+                android:text="31 Desember 23:23"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/srs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/humidity"
+                android:layout_marginLeft="35dp"
+                android:layout_marginBottom="5dp"
+                android:layout_toEndOf="@id/windSpeed"
+                android:text="SULUNG RESEARCH STATION"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/weatherTemperature" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
