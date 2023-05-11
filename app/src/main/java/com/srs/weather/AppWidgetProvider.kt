@@ -37,9 +37,10 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         val views = RemoteViews(context.packageName, R.layout.weather_widget_layout2)
         val rootView = views.layoutId
 
+        val updateIntent = createUpdateIntent(context, appWidgetId)
+
         // Set the click listener for the root view
-        views.setOnClickPendingIntent(rootView, createUpdateIntent(context))
-        views.setOnClickPendingIntent(R.id.weather_widget_layout_id, createUpdateIntent(context))
+        views.setOnClickPendingIntent(R.id.weather_widget_layout_id, updateIntent)
         // Fetch weather data asynchronously
         val dataCallback = object : WeatherDataCallback {
             override fun onWeatherDataFetched(weatherData: WeatherData) {
@@ -64,13 +65,13 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         fun onWeatherDataFetched(weatherData: WeatherData)
     }
 
-    private fun createUpdateIntent(context: Context): PendingIntent {
-        Log.d("testUpdate", "masuk createUpdateIntent")
+    private fun createUpdateIntent(context: Context, appWidgetId: Int): PendingIntent {
         val intent = Intent(context, WeatherWidgetProvider::class.java)
         intent.action = ACTION_UPDATE
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         return PendingIntent.getBroadcast(
             context,
-            0,
+            appWidgetId,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
