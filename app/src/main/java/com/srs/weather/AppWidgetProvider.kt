@@ -29,40 +29,28 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         }
     }
 
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (intent.action == ACTION_UPDATE) {
+            val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                // Handle the click action here
+                Log.d("WeatherWidgetProvider", "Widget clicked!")
+                FetchWeatherDataTask(context, appWidgetId).execute()
+            }
+        }
+    }
+
     private fun updateAppWidget(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int
     ) {
         val views = RemoteViews(context.packageName, R.layout.weather_widget_layout2)
-        val rootView = views.layoutId
-
         val updateIntent = createUpdateIntent(context, appWidgetId)
-
-        // Set the click listener for the root view
         views.setOnClickPendingIntent(R.id.weather_widget_layout_id, updateIntent)
-        // Fetch weather data asynchronously
-        val dataCallback = object : WeatherDataCallback {
-            override fun onWeatherDataFetched(weatherData: WeatherData) {
-                views.setTextViewText(R.id.weatherTemperature, weatherData.temperature)
-                // Update other widget views with the available data
-                views.setTextViewText(R.id.rainfallRate, weatherData.rainRate)
-                views.setTextViewText(R.id.humidity, weatherData.humidity)
-                views.setTextViewText(R.id.windSpeed, weatherData.windspeed)
-                views.setTextViewText(R.id.date, weatherData.date)
 
-                // Update the widget
-                appWidgetManager.updateAppWidget(appWidgetId, views)
-            }
-        }
-
-        // Execute the task to fetch weather data
-        val fetchWeatherDataTask = FetchWeatherDataTask(dataCallback)
-        fetchWeatherDataTask.execute()
-    }
-
-    private interface WeatherDataCallback {
-        fun onWeatherDataFetched(weatherData: WeatherData)
+        appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
     private fun createUpdateIntent(context: Context, appWidgetId: Int): PendingIntent {
@@ -78,10 +66,12 @@ class WeatherWidgetProvider : AppWidgetProvider() {
     }
 
 
-    private class FetchWeatherDataTask(private val callback: WeatherDataCallback) :
-        AsyncTask<Void, Void, String>() {
+    private class FetchWeatherDataTask(
+        private val context: Context,
+        private val appWidgetId: Int
+    ) : AsyncTask<Unit, Unit, WeatherData>() {
 
-        override fun doInBackground(vararg params: Void): String? {
+        override fun doInBackground(vararg params: Unit?): WeatherData {
             var connection: HttpURLConnection? = null
             var reader: BufferedReader? = null
 
@@ -99,7 +89,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     while (reader.readLine().also { line = it } != null) {
                         response.append(line)
                     }
-                    return response.toString()
+                    return WeatherData.fromJson(JSONObject(response.toString()))
                 } else {
                     // Handle error response
                 }
@@ -111,18 +101,20 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 connection?.disconnect()
             }
 
-            return null
+            return WeatherData("", "", "", "", "", "", "", "")
         }
 
-        override fun onPostExecute(result: String?) {
+        override fun onPostExecute(result: WeatherData) {
             super.onPostExecute(result)
-            if (result != null) {
-                val jsonObject = JSONObject(result)
-                val weatherData = WeatherData.fromJson(jsonObject)
-                callback.onWeatherDataFetched(weatherData)
-            } else {
-                // Handle null result or error case
-            }
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val remoteViews =
+                RemoteViews(context.packageName, R.layout.weather_widget_layout2)
+            remoteViews.setTextViewText(R.id.weatherTemperature, result.temperature)
+            remoteViews.setTextViewText(R.id.rainfallRate, result.rainRate)
+            remoteViews.setTextViewText(R.id.humidity, result.humidity)
+            remoteViews.setTextViewText(R.id.windSpeed, result.windspeed)
+            remoteViews.setTextViewText(R.id.date, result.date)
+            appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }
     }
 
