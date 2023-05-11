@@ -46,10 +46,10 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int
     ) {
-        val views = RemoteViews(context.packageName, R.layout.weather_widget_layout2)
+        FetchWeatherDataTask(context, appWidgetId).execute()
+        val views = RemoteViews(context.packageName, R.layout.weather_widget_layout)
         val updateIntent = createUpdateIntent(context, appWidgetId)
         views.setOnClickPendingIntent(R.id.weather_widget_layout_id, updateIntent)
-
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
@@ -108,7 +108,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             super.onPostExecute(result)
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val remoteViews =
-                RemoteViews(context.packageName, R.layout.weather_widget_layout2)
+                RemoteViews(context.packageName, R.layout.weather_widget_layout)
             remoteViews.setTextViewText(R.id.weatherTemperature, result.temperature)
             remoteViews.setTextViewText(R.id.rainfallRate, result.rainRate)
             remoteViews.setTextViewText(R.id.humidity, result.humidity)
