@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll"
-        android:hint="admin@gmail.com"
+        android:hint="user@gmail.com"
         android:textSize="20sp"/>
 
     <EditText
