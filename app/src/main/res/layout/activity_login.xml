@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="co.id.ssms.mobilepro.Login"
+    tools:context=".Login"
     android:id="@+id/login_parent">
 
     <EditText
@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll"
-        android:hint="sumbermas@sle.com"
+        android:hint="admin@gmail.com"
         android:textSize="20sp"/>
 
     <EditText
@@ -151,12 +151,12 @@
         android:visibility="gone"
         android:elevation="20dp">
 
-        <!--<com.airbnb.lottie.LottieAnimationView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:background="@color/white" />-->
+            android:background="@color/white" />
 
         <LinearLayout
             android:layout_width="match_parent"

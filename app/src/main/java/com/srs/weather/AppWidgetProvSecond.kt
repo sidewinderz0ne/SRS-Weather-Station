@@ -19,9 +19,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class WeatherWidgetProvider : AppWidgetProvider() {
+class WidgetProviderSecond : AppWidgetProvider() {
 
-    private val ACTION_UPDATE = "com.srs.weather.ACTION_UPDATE"
+    private val ACTION_UPDATE = "com.srs.weather.ACTION_UPDATE_SECOND"
 
     override fun onUpdate(
         context: Context,
@@ -37,16 +37,19 @@ class WeatherWidgetProvider : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         if (intent.action == ACTION_UPDATE) {
-            val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+            val appWidgetId = intent.getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID
+            )
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 // Handle the click action here
                 Log.d("WeatherWidgetProvider", "Widget clicked!")
 
-                val views = RemoteViews(context.packageName, R.layout.weather_widget_layout)
+                val views = RemoteViews(context.packageName, R.layout.widget_layout_second)
 
                 // Show the progress bar and hide the refresh button
-                views.setViewVisibility(R.id.progressBar, View.VISIBLE)
-                views.setViewVisibility(R.id.refresh, View.GONE)
+                views.setViewVisibility(R.id.progressBarSc, View.VISIBLE)
+                views.setViewVisibility(R.id.refreshSc, View.GONE)
 
                 // Update the widget to reflect the changes
                 AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views)
@@ -62,8 +65,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
 
                     override fun onFinish() {
                         // Timer finished, switch the visibility of the refresh button and progress bar
-                        views.setViewVisibility(R.id.progressBar, View.GONE)
-                        views.setViewVisibility(R.id.refresh, View.VISIBLE)
+                        views.setViewVisibility(R.id.progressBarSc, View.GONE)
+                        views.setViewVisibility(R.id.refreshSc, View.VISIBLE)
 
                         // Update the widget to reflect the changes
                         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views)
@@ -96,27 +99,37 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int
     ) {
-        val views = RemoteViews(context.packageName, R.layout.weather_widget_layout)
+        val views = RemoteViews(context.packageName, R.layout.widget_layout_second)
 
         val updateIntent = createUpdateIntent(context, appWidgetId)
-        views.setOnClickPendingIntent(R.id.refresh, updateIntent)
+        views.setOnClickPendingIntent(R.id.refreshSc, updateIntent)
 
         val stationIntent = Intent(context, StationList::class.java)
         stationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        val stationPendingIntent = PendingIntent.getActivity(context, 0, stationIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        views.setOnClickPendingIntent(R.id.srsLogo, stationPendingIntent)
+        val stationPendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            stationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        views.setOnClickPendingIntent(R.id.srsLogoSc, stationPendingIntent)
 
         val appIntent = Intent(context, Login::class.java)
         appIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        val mainPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        views.setOnClickPendingIntent(R.id.weather_widget_layout_id, mainPendingIntent)
+        val mainPendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            appIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        views.setOnClickPendingIntent(R.id.widget_layout_second_id, mainPendingIntent)
 
         FetchWeatherDataTask(context, appWidgetId).execute()
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
     private fun createUpdateIntent(context: Context, appWidgetId: Int): PendingIntent {
-        val intent = Intent(context, WeatherWidgetProvider::class.java)
+        val intent = Intent(context, WidgetProviderSecond::class.java)
         intent.action = ACTION_UPDATE
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         return PendingIntent.getBroadcast(
@@ -140,7 +153,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             var reader: BufferedReader? = null
 
             try {
-                val url = URL("https://srs-ssms.com/aws_misol/get_aws_last_data.php?idws=${prefManager.idStation}")
+                val url = URL("https://srs-ssms.com/aws_misol/getDataAwsLocation.php?idws1=${prefManager.idStation1}&idws2=${prefManager.idStation2}&idws3=${prefManager.idStation3}&idws4=${prefManager.idStation4}")
                 connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 
@@ -153,66 +166,173 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     while (reader.readLine().also { line = it } != null) {
                         response.append(line)
                     }
-                    return WeatherData.fromJson(JSONObject(response.toString()))
+                    val jsonResponse = JSONObject(response.toString())
+                    if (jsonResponse.has("error")) {
+                        // Handle error response
+                        // For example, you can throw an exception or return null
+                        throw Exception("Error: ${jsonResponse.getString("error")}")
+                    } else {
+                        return WeatherData.fromJson(jsonResponse)
+                    }
                 } else {
                     // Handle error response
+                    // For example, you can throw an exception or return null
+                    throw Exception("Error: $responseCode")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                // Handle exception
+                // For example, you can throw an exception or return null
+                throw e
             } finally {
                 // Close resources
                 reader?.close()
                 connection?.disconnect()
             }
-
-            return WeatherData("", "", "-", "0", "", "0", "0", "0")
         }
 
         override fun onPostExecute(result: WeatherData) {
             super.onPostExecute(result)
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val remoteViews =
-                RemoteViews(context.packageName, R.layout.weather_widget_layout)
-            remoteViews.setTextViewText(R.id.weatherTemperature, result.temperature)
-            remoteViews.setTextViewText(R.id.rainfallRate, result.rainRate)
-            remoteViews.setTextViewText(R.id.humidity, result.humidity)
-            remoteViews.setTextViewText(R.id.windSpeed, result.windspeed)
-            remoteViews.setTextViewText(R.id.date, result.date)
-            remoteViews.setTextViewText(R.id.station, "Station: " + prefManager.locStation!!)
+                RemoteViews(context.packageName, R.layout.widget_layout_second)
+            remoteViews.setTextViewText(R.id.dateSc, result.date)
+            remoteViews.setTextViewText(
+                R.id.locStation1,
+                prefManager.locStation1!!)
+            remoteViews.setTextViewText(R.id.uvStation1, result.uv1)
+            remoteViews.setTextViewText(R.id.tempStation1, result.temperature1)
+            remoteViews.setTextViewText(R.id.rainRateSecond1, result.rainRate1)
+            remoteViews.setTextViewText(R.id.humSecond1, result.humidity1)
+            remoteViews.setTextViewText(R.id.windSpeedSecond1, result.windspeed1)
+            remoteViews.setTextViewText(
+                R.id.locStation2,
+                prefManager.locStation2!!)
+            remoteViews.setTextViewText(R.id.uvStation2, result.uv2)
+            remoteViews.setTextViewText(R.id.tempStation2, result.temperature2)
+            remoteViews.setTextViewText(R.id.rainRateSecond2, result.rainRate2)
+            remoteViews.setTextViewText(R.id.humSecond2, result.humidity2)
+            remoteViews.setTextViewText(R.id.windSpeedSecond2, result.windspeed2)
+            remoteViews.setTextViewText(
+                R.id.locStation3,
+                prefManager.locStation3!!)
+            remoteViews.setTextViewText(R.id.uvStation3, result.uv3)
+            remoteViews.setTextViewText(R.id.tempStation3, result.temperature3)
+            remoteViews.setTextViewText(R.id.rainRateSecond3, result.rainRate3)
+            remoteViews.setTextViewText(R.id.humSecond3, result.humidity3)
+            remoteViews.setTextViewText(R.id.windSpeedSecond3, result.windspeed3)
+            remoteViews.setTextViewText(
+                R.id.locStation4,
+                prefManager.locStation4!!)
+            remoteViews.setTextViewText(R.id.uvStation4, result.uv4)
+            remoteViews.setTextViewText(R.id.tempStation4, result.temperature4)
+            remoteViews.setTextViewText(R.id.rainRateSecond4, result.rainRate4)
+            remoteViews.setTextViewText(R.id.humSecond4, result.humidity4)
+            remoteViews.setTextViewText(R.id.windSpeedSecond4, result.windspeed4)
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }
     }
 
     private data class WeatherData(
-        val id: String,
-        val idws: String,
         val date: String,
-        val windspeed: String,
-        val winddir: String,
-        val rainRate: String,
-        val humidity: String,
-        val temperature: String
+        val id1: String,
+        val id2: String,
+        val id3: String,
+        val id4: String,
+        val idws1: String,
+        val idws2: String,
+        val idws3: String,
+        val idws4: String,
+        val uv1: String,
+        val uv2: String,
+        val uv3: String,
+        val uv4: String,
+        val temperature1: String,
+        val temperature2: String,
+        val temperature3: String,
+        val temperature4: String,
+        val rainRate1: String,
+        val rainRate2: String,
+        val rainRate3: String,
+        val rainRate4: String,
+        val humidity1: String,
+        val humidity2: String,
+        val humidity3: String,
+        val humidity4: String,
+        val windspeed1: String,
+        val windspeed2: String,
+        val windspeed3: String,
+        val windspeed4: String
     ) {
         companion object {
             fun fromJson(json: JSONObject): WeatherData {
-                val id = json.getString("id")
-                val idws = json.getString("idws")
-                val date = json.getString("date")
-                val windspeed = json.getString("ws")
-                val winddir = json.getString("winddir")
-                val rainRate = json.getString("rain_rate")
-                val humidity = json.getString("hum")
-                val temperature = json.getString("temp")
+                val dataStation1 = json.getJSONObject("station1")
+                val date = dataStation1.getString("date")
+                val id1 = dataStation1.getString("id1")
+                val idws1 = dataStation1.getString("idws1")
+                val uv1 = dataStation1.getString("uv1")
+                val temperature1 = dataStation1.getString("temp1") + "°"
+                val rainRate1 = dataStation1.getString("rain_rate1")
+                val humidity1 = dataStation1.getString("hum1")
+                val windspeed1 = dataStation1.getString("ws1")
+
+                val dataStation2 = json.getJSONObject("station2")
+                val id2 = dataStation2.getString("id2")
+                val idws2 = dataStation2.getString("idws2")
+                val uv2 = dataStation2.getString("uv2")
+                val temperature2 = dataStation2.getString("temp2") + "°"
+                val rainRate2 = dataStation2.getString("rain_rate2")
+                val humidity2 = dataStation2.getString("hum2")
+                val windspeed2 = dataStation2.getString("ws2")
+
+                val dataStation3 = json.getJSONObject("station3")
+                val id3 = dataStation3.getString("id3")
+                val idws3 = dataStation3.getString("idws3")
+                val uv3 = dataStation3.getString("uv3")
+                val temperature3 = dataStation3.getString("temp3") + "°"
+                val rainRate3 = dataStation3.getString("rain_rate3")
+                val humidity3 = dataStation3.getString("hum3")
+                val windspeed3 = dataStation3.getString("ws3")
+
+                val dataStation4 = json.getJSONObject("station4")
+                val id4 = dataStation4.getString("id4")
+                val idws4 = dataStation4.getString("idws4")
+                val uv4 = dataStation4.getString("uv4")
+                val temperature4 = dataStation4.getString("temp4") + "°"
+                val rainRate4 = dataStation4.getString("rain_rate4")
+                val humidity4 = dataStation4.getString("hum4")
+                val windspeed4 = dataStation4.getString("ws4")
 
                 return WeatherData(
-                    id,
-                    idws,
                     date,
-                    windspeed,
-                    winddir,
-                    rainRate,
-                    humidity,
-                    temperature
+                    id1,
+                    id2,
+                    id3,
+                    id4,
+                    idws1,
+                    idws2,
+                    idws3,
+                    idws4,
+                    uv1,
+                    uv2,
+                    uv3,
+                    uv4,
+                    temperature1,
+                    temperature2,
+                    temperature3,
+                    temperature4,
+                    rainRate1,
+                    rainRate2,
+                    rainRate3,
+                    rainRate4,
+                    humidity1,
+                    humidity2,
+                    humidity3,
+                    humidity4,
+                    windspeed1,
+                    windspeed2,
+                    windspeed3,
+                    windspeed4
                 )
             }
         }
@@ -229,7 +349,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
 
             try {
                 val prefManager = PrefManager(context)
-                val url = URL("https://srs-ssms.com/aws_misol/getListStation.php?version=${prefManager.versionSt}")
+                val url =
+                    URL("https://srs-ssms.com/aws_misol/getListStation.php?version=${prefManager.versionSt}")
                 connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 

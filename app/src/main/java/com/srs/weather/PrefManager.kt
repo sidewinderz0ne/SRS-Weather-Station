@@ -49,6 +49,104 @@ class PrefManager(_context: Context) {
             editor.commit()
         }
 
+    var idStation1: Int
+        get() = pref.getInt(id_station1, 15)
+        set(idStCount1) {
+            editor.putInt(id_station1, idStCount1)
+            editor.commit()
+        }
+
+    var idStation2: Int
+        get() = pref.getInt(id_station2, 15)
+        set(idStCount2) {
+            editor.putInt(id_station2, idStCount2)
+            editor.commit()
+        }
+
+    var idStation3: Int
+        get() = pref.getInt(id_station3, 15)
+        set(idStCount3) {
+            editor.putInt(id_station3, idStCount3)
+            editor.commit()
+        }
+
+    var idStation4: Int
+        get() = pref.getInt(id_station4, 15)
+        set(idStCount4) {
+            editor.putInt(id_station4, idStCount4)
+            editor.commit()
+        }
+
+    var locStation: String?
+        get() = pref.getString(loc_station, "SRS")
+        set(locStCount) {
+            editor.putString(loc_station, locStCount)
+            editor.commit()
+        }
+
+    var locStation1: String?
+        get() = pref.getString(loc_station1, "SRS")
+        set(locStCount1) {
+            editor.putString(loc_station1, locStCount1)
+            editor.commit()
+        }
+
+    var locStation2: String?
+        get() = pref.getString(loc_station2, "SRS")
+        set(locStCount2) {
+            editor.putString(loc_station2, locStCount2)
+            editor.commit()
+        }
+
+    var locStation3: String?
+        get() = pref.getString(loc_station3, "SRS")
+        set(locStCount3) {
+            editor.putString(loc_station3, locStCount3)
+            editor.commit()
+        }
+
+    var locStation4: String?
+        get() = pref.getString(loc_station4, "SRS")
+        set(locStCount4) {
+            editor.putString(loc_station4, locStCount4)
+            editor.commit()
+        }
+
+    var userid: String?
+        get() = pref.getString(USERID, null)
+        set(userId) {
+            editor.putString(USERID, userId)
+            editor.commit()
+        }
+
+    var name: String?
+        get() = pref.getString(NAME, null)
+        set(sureName) {
+            editor.putString(NAME, sureName)
+            editor.commit()
+        }
+
+    var email: String?
+        get() = pref.getString(EMAIL, null)
+        set(mail) {
+            editor.putString(EMAIL, mail)
+            editor.commit()
+        }
+
+    var password: String?
+        get() = pref.getString(PASSWORD, null)
+        set(pass) {
+            editor.putString(PASSWORD, pass)
+            editor.commit()
+        }
+
+    var prevActivity: Int
+        get() = pref.getInt(prevAct, 0)
+        set(prev) {
+            editor.putInt(prevAct, prev)
+            editor.commit()
+        }
+
     companion object {
         // Shared preferences file name
         private const val PREF_NAME = "sulungresearch"
@@ -57,7 +155,21 @@ class PrefManager(_context: Context) {
         private const val SESSION = "Session"
 
         const val version_tag = "versionSt"
-        const val id_station = "idSt"
+        const val id_station = "idStation"
+        const val id_station1 = "idStation1"
+        const val id_station2 = "idStation2"
+        const val id_station3 = "idStation3"
+        const val id_station4 = "idStation4"
+        const val loc_station = "locStation"
+        const val loc_station1 = "locStation1"
+        const val loc_station2 = "locStation2"
+        const val loc_station3 = "locStation3"
+        const val loc_station4 = "locStation4"
+        const val USERID = "user_id"
+        const val NAME = "name"
+        const val EMAIL = "email"
+        const val PASSWORD = "password"
+        const val prevAct = "prevAct"
     }
 
     init {
