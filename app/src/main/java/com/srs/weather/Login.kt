@@ -40,9 +40,6 @@ class Login : AppCompatActivity() {
     var promptInfo: BiometricPrompt.PromptInfo? = null
     private var biometricPrompt: BiometricPrompt? = null
 
-    //inisialisasi url
-//    val url = Database.mp + "config/apk-login.php"
-
     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UNNECESSARY_SAFE_CALL")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +81,7 @@ class Login : AppCompatActivity() {
     private fun setTampilan() {
         window.statusBarColor = Color.WHITE //ganti warna statusbar
         progressBarHolder.visibility = View.GONE //hilangkan progressbar
+        tvVersi.text = BuildConfig.VERSION_NAME //SETTING TEXT TO APP VERSION
 
         Glide.with(this)//GLIDE LOGO FOR LOADING LAYOUT
             .load(R.mipmap.ic_launcher)
