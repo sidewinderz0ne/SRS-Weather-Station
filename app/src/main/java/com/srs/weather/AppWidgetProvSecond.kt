@@ -194,6 +194,28 @@ class WidgetProviderSecond : AppWidgetProvider() {
         override fun onPostExecute(result: WeatherData) {
             super.onPostExecute(result)
             val appWidgetManager = AppWidgetManager.getInstance(context)
+
+            val resultRr1 = if (result.rrMonth1.toInt() in 60..300) {
+                "✓"
+            } else {
+                "✕"
+            }
+            val resultRr2 = if (result.rrMonth2.toInt() in 60..300) {
+                "✓"
+            } else {
+                "✕"
+            }
+            val resultRr3 = if (result.rrMonth3.toInt() in 60..300) {
+                "✓"
+            } else {
+                "✕"
+            }
+            val resultRr4 = if (result.rrMonth4.toInt() in 60..300) {
+                "✓"
+            } else {
+                "✕"
+            }
+
             val remoteViews =
                 RemoteViews(context.packageName, R.layout.widget_layout_second)
             remoteViews.setTextViewText(R.id.dateSc, result.date)
@@ -205,6 +227,7 @@ class WidgetProviderSecond : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.rainRateSecond1, result.rainRate1)
             remoteViews.setTextViewText(R.id.humSecond1, result.humidity1)
             remoteViews.setTextViewText(R.id.windSpeedSecond1, result.windspeed1)
+            remoteViews.setTextViewText(R.id.rrMonthSecond1, resultRr1)
             remoteViews.setTextViewText(
                 R.id.locStation2,
                 prefManager.locStation2!!)
@@ -213,6 +236,7 @@ class WidgetProviderSecond : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.rainRateSecond2, result.rainRate2)
             remoteViews.setTextViewText(R.id.humSecond2, result.humidity2)
             remoteViews.setTextViewText(R.id.windSpeedSecond2, result.windspeed2)
+            remoteViews.setTextViewText(R.id.rrMonthSecond2, resultRr2)
             remoteViews.setTextViewText(
                 R.id.locStation3,
                 prefManager.locStation3!!)
@@ -221,6 +245,7 @@ class WidgetProviderSecond : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.rainRateSecond3, result.rainRate3)
             remoteViews.setTextViewText(R.id.humSecond3, result.humidity3)
             remoteViews.setTextViewText(R.id.windSpeedSecond3, result.windspeed3)
+            remoteViews.setTextViewText(R.id.rrMonthSecond3, resultRr3)
             remoteViews.setTextViewText(
                 R.id.locStation4,
                 prefManager.locStation4!!)
@@ -229,6 +254,7 @@ class WidgetProviderSecond : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.rainRateSecond4, result.rainRate4)
             remoteViews.setTextViewText(R.id.humSecond4, result.humidity4)
             remoteViews.setTextViewText(R.id.windSpeedSecond4, result.windspeed4)
+            remoteViews.setTextViewText(R.id.rrMonthSecond4, resultRr4)
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }
     }
@@ -262,7 +288,11 @@ class WidgetProviderSecond : AppWidgetProvider() {
         val windspeed1: String,
         val windspeed2: String,
         val windspeed3: String,
-        val windspeed4: String
+        val windspeed4: String,
+        val rrMonth1: String,
+        val rrMonth2: String,
+        val rrMonth3: String,
+        val rrMonth4: String
     ) {
         companion object {
             fun fromJson(json: JSONObject): WeatherData {
@@ -275,6 +305,7 @@ class WidgetProviderSecond : AppWidgetProvider() {
                 val rainRate1 = dataStation1.getString("rain_rate1")
                 val humidity1 = dataStation1.getString("hum1")
                 val windspeed1 = dataStation1.getString("ws1")
+                val rrMonth1 = dataStation1.getString("rrMonth1")
 
                 val dataStation2 = json.getJSONObject("station2")
                 val id2 = dataStation2.getString("id2")
@@ -284,6 +315,7 @@ class WidgetProviderSecond : AppWidgetProvider() {
                 val rainRate2 = dataStation2.getString("rain_rate2")
                 val humidity2 = dataStation2.getString("hum2")
                 val windspeed2 = dataStation2.getString("ws2")
+                val rrMonth2 = dataStation2.getString("rrMonth2")
 
                 val dataStation3 = json.getJSONObject("station3")
                 val id3 = dataStation3.getString("id3")
@@ -293,6 +325,7 @@ class WidgetProviderSecond : AppWidgetProvider() {
                 val rainRate3 = dataStation3.getString("rain_rate3")
                 val humidity3 = dataStation3.getString("hum3")
                 val windspeed3 = dataStation3.getString("ws3")
+                val rrMonth3 = dataStation3.getString("rrMonth3")
 
                 val dataStation4 = json.getJSONObject("station4")
                 val id4 = dataStation4.getString("id4")
@@ -302,6 +335,7 @@ class WidgetProviderSecond : AppWidgetProvider() {
                 val rainRate4 = dataStation4.getString("rain_rate4")
                 val humidity4 = dataStation4.getString("hum4")
                 val windspeed4 = dataStation4.getString("ws4")
+                val rrMonth4 = dataStation4.getString("rrMonth4")
 
                 return WeatherData(
                     date,
@@ -332,7 +366,11 @@ class WidgetProviderSecond : AppWidgetProvider() {
                     windspeed1,
                     windspeed2,
                     windspeed3,
-                    windspeed4
+                    windspeed4,
+                    rrMonth1,
+                    rrMonth2,
+                    rrMonth3,
+                    rrMonth4
                 )
             }
         }

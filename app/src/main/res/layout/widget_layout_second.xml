@@ -79,7 +79,7 @@
 
         <TextView
             android:id="@+id/locStation"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Station"
@@ -89,7 +89,7 @@
 
         <TextView
             android:id="@+id/uvStation"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="UV"
@@ -109,7 +109,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="CH"
@@ -137,6 +137,16 @@
             android:textColor="@android:color/white"
             android:textSize="13sp" />
 
+        <TextView
+            android:id="@+id/rrMonthSecond"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Pupuk"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -151,7 +161,7 @@
 
         <TextView
             android:id="@+id/locStation1"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="KNE"
@@ -160,7 +170,7 @@
 
         <TextView
             android:id="@+id/uvStation1"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="6"
@@ -178,7 +188,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond1"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"
@@ -203,6 +213,15 @@
             android:textColor="@android:color/white"
             android:textSize="13sp" />
 
+        <TextView
+            android:id="@+id/rrMonthSecond1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="✕"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -217,7 +236,7 @@
 
         <TextView
             android:id="@+id/locStation2"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="KNE"
@@ -226,7 +245,7 @@
 
         <TextView
             android:id="@+id/uvStation2"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="6"
@@ -244,7 +263,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond2"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"
@@ -269,6 +288,15 @@
             android:textColor="@android:color/white"
             android:textSize="13sp" />
 
+        <TextView
+            android:id="@+id/rrMonthSecond2"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="✕"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -283,7 +311,7 @@
 
         <TextView
             android:id="@+id/locStation3"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="KNE"
@@ -292,7 +320,7 @@
 
         <TextView
             android:id="@+id/uvStation3"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="6"
@@ -310,7 +338,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond3"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"
@@ -335,6 +363,15 @@
             android:textColor="@android:color/white"
             android:textSize="13sp" />
 
+        <TextView
+            android:id="@+id/rrMonthSecond3"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="✕"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -349,7 +386,7 @@
 
         <TextView
             android:id="@+id/locStation4"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="KNE"
@@ -358,7 +395,7 @@
 
         <TextView
             android:id="@+id/uvStation4"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="6"
@@ -376,7 +413,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond4"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"
@@ -398,6 +435,15 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/rrMonthSecond4"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="✕"
             android:textColor="@android:color/white"
             android:textSize="13sp" />
 

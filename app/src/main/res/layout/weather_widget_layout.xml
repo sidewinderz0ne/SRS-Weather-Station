@@ -16,20 +16,20 @@
         android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="67dp"
         android:text="34"
         android:textColor="@android:color/white"
-        android:textSize="84sp" />
+        android:textSize="85sp" />
 
     <TextView
         android:id="@+id/degree"
-        android:layout_marginTop="57dp"
+        android:layout_marginTop="75dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/weatherTemperature"
         android:text="°"
         android:textColor="@color/white"
-        android:textSize="70sp" />
+        android:textSize="60sp" />
 
     <LinearLayout
         android:layout_marginLeft="15dp"
@@ -198,12 +198,12 @@
 
     <ImageView
         android:id="@+id/srsLogo"
-        android:layout_marginTop="10dp"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="135dp"
+        android:layout_height="45dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="15dp"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
         android:src="@drawable/lowres_putih" />
 
     <TextView
@@ -214,6 +214,17 @@
         android:layout_alignStart="@id/srsLogo"
         android:layout_below="@id/srsLogo"
         android:text="Station: SRS"
+        android:textColor="@android:color/white"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/recom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/station"
+        android:layout_alignStart="@id/station"
+        android:layout_below="@id/station"
+        android:text="Pemupukan: Tidak Disarankan"
         android:textColor="@android:color/white"
         android:textSize="10sp" />
 

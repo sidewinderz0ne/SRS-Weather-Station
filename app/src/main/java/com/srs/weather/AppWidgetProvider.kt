@@ -165,12 +165,19 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 connection?.disconnect()
             }
 
-            return WeatherData("", "", "-", "0", "", "0", "0", "0")
+            return WeatherData("", "", "-", "0", "", "0", "0", "0", "0")
         }
 
         override fun onPostExecute(result: WeatherData) {
             super.onPostExecute(result)
             val appWidgetManager = AppWidgetManager.getInstance(context)
+
+            val resultRr = if (result.rrMonth.toInt() in 60..300) {
+                "Disarankan"
+            } else {
+                "Tidak Disarankan"
+            }
+
             val remoteViews =
                 RemoteViews(context.packageName, R.layout.weather_widget_layout)
             remoteViews.setTextViewText(R.id.weatherTemperature, result.temperature)
@@ -179,6 +186,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.windSpeed, result.windspeed)
             remoteViews.setTextViewText(R.id.date, result.date)
             remoteViews.setTextViewText(R.id.station, "Station: " + prefManager.locStation!!)
+            remoteViews.setTextViewText(R.id.recom, "Pemupukan: $resultRr")
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }
     }
@@ -191,7 +199,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         val winddir: String,
         val rainRate: String,
         val humidity: String,
-        val temperature: String
+        val temperature: String,
+        val rrMonth: String
     ) {
         companion object {
             fun fromJson(json: JSONObject): WeatherData {
@@ -203,6 +212,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 val rainRate = json.getString("rain_rate")
                 val humidity = json.getString("hum")
                 val temperature = json.getString("temp")
+                val rrMonth = json.getString("rrMonth")
 
                 return WeatherData(
                     id,
@@ -212,7 +222,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     winddir,
                     rainRate,
                     humidity,
-                    temperature
+                    temperature,
+                    rrMonth
                 )
             }
         }
