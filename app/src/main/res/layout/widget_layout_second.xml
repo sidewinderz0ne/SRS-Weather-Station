@@ -79,7 +79,7 @@
 
         <TextView
             android:id="@+id/locStation"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Station"
@@ -99,7 +99,7 @@
 
         <TextView
             android:id="@+id/tempStation"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Suhu"
@@ -109,10 +109,10 @@
 
         <TextView
             android:id="@+id/rainRateSecond"
-            android:layout_width="30dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="CH"
+            android:text="mm/hr"
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:textSize="13sp" />
@@ -161,7 +161,7 @@
 
         <TextView
             android:id="@+id/locStation1"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="KNE"
@@ -179,7 +179,7 @@
 
         <TextView
             android:id="@+id/tempStation1"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="36°"
@@ -188,7 +188,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond1"
-            android:layout_width="30dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"
@@ -236,7 +236,7 @@
 
         <TextView
             android:id="@+id/locStation2"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="KNE"
@@ -254,7 +254,7 @@
 
         <TextView
             android:id="@+id/tempStation2"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="36°"
@@ -263,7 +263,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond2"
-            android:layout_width="30dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"
@@ -311,7 +311,7 @@
 
         <TextView
             android:id="@+id/locStation3"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="KNE"
@@ -329,7 +329,7 @@
 
         <TextView
             android:id="@+id/tempStation3"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="36°"
@@ -338,7 +338,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond3"
-            android:layout_width="30dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"
@@ -386,7 +386,7 @@
 
         <TextView
             android:id="@+id/locStation4"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="KNE"
@@ -404,7 +404,7 @@
 
         <TextView
             android:id="@+id/tempStation4"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="36°"
@@ -413,7 +413,7 @@
 
         <TextView
             android:id="@+id/rainRateSecond4"
-            android:layout_width="30dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="0"

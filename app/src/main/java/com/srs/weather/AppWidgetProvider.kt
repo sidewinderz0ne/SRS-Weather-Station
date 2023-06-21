@@ -37,7 +37,10 @@ class WeatherWidgetProvider : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         if (intent.action == ACTION_UPDATE) {
-            val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+            val appWidgetId = intent.getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID
+            )
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 // Handle the click action here
                 Log.d("WeatherWidgetProvider", "Widget clicked!")
@@ -103,12 +106,22 @@ class WeatherWidgetProvider : AppWidgetProvider() {
 
         val stationIntent = Intent(context, StationList::class.java)
         stationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        val stationPendingIntent = PendingIntent.getActivity(context, 0, stationIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val stationPendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            stationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         views.setOnClickPendingIntent(R.id.srsLogo, stationPendingIntent)
 
         val appIntent = Intent(context, Login::class.java)
         appIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        val mainPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val mainPendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            appIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         views.setOnClickPendingIntent(R.id.weather_widget_layout_id, mainPendingIntent)
 
         FetchWeatherDataTask(context, appWidgetId).execute()
@@ -140,7 +153,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             var reader: BufferedReader? = null
 
             try {
-                val url = URL("https://srs-ssms.com/aws_misol/get_aws_last_data.php?idws=${prefManager.idStation}")
+                val url =
+                    URL("https://srs-ssms.com/aws_misol/get_aws_last_data.php?idws=${prefManager.idStation}")
                 connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 
@@ -153,19 +167,23 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     while (reader.readLine().also { line = it } != null) {
                         response.append(line)
                     }
-                    return WeatherData.fromJson(JSONObject(response.toString()))
+                    val jsonResponse = JSONObject(response.toString())
+                    if (jsonResponse.has("error")) {
+                        throw Exception("Error: ${jsonResponse.getString("error")}")
+                    } else {
+                        return WeatherData.fromJson(jsonResponse)
+                    }
                 } else {
-                    // Handle error response
+                    throw Exception("Error: $responseCode")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                throw e
             } finally {
                 // Close resources
                 reader?.close()
                 connection?.disconnect()
             }
-
-            return WeatherData("", "", "-", "0", "", "0", "0", "0", "0")
         }
 
         override fun onPostExecute(result: WeatherData) {
@@ -240,7 +258,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
 
             try {
                 val prefManager = PrefManager(context)
-                val url = URL("https://srs-ssms.com/aws_misol/getListStation.php?version=${prefManager.versionSt}")
+                val url =
+                    URL("https://srs-ssms.com/aws_misol/getListStation.php?version=${prefManager.versionSt}")
                 connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 

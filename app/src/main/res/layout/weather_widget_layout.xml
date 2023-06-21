@@ -7,29 +7,27 @@
     android:id="@+id/weather_widget_layout_id"
     android:background="@drawable/widget_background">
 
-
     <TextView
         android:id="@+id/weatherTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-5dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="67dp"
+        android:layout_below="@id/recom"
         android:text="34"
         android:textColor="@android:color/white"
-        android:textSize="85sp" />
+        android:textSize="60sp" />
 
     <TextView
         android:id="@+id/degree"
-        android:layout_marginTop="75dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-5dp"
         android:layout_toRightOf="@id/weatherTemperature"
+        android:layout_below="@id/recom"
         android:text="°"
         android:textColor="@color/white"
-        android:textSize="60sp" />
+        android:textSize="55sp" />
 
     <LinearLayout
         android:layout_marginLeft="15dp"
@@ -116,7 +114,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal"
-
             android:layout_marginTop="15dp"
             android:gravity="center|left">
 

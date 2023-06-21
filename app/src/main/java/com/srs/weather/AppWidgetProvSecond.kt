@@ -153,7 +153,8 @@ class WidgetProviderSecond : AppWidgetProvider() {
             var reader: BufferedReader? = null
 
             try {
-                val url = URL("https://srs-ssms.com/aws_misol/getDataAwsLocation.php?idws1=${prefManager.idStation1}&idws2=${prefManager.idStation2}&idws3=${prefManager.idStation3}&idws4=${prefManager.idStation4}")
+                val url =
+                    URL("https://srs-ssms.com/aws_misol/getDataAwsLocation.php?idws1=${prefManager.idStation1}&idws2=${prefManager.idStation2}&idws3=${prefManager.idStation3}&idws4=${prefManager.idStation4}")
                 connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 
@@ -168,21 +169,15 @@ class WidgetProviderSecond : AppWidgetProvider() {
                     }
                     val jsonResponse = JSONObject(response.toString())
                     if (jsonResponse.has("error")) {
-                        // Handle error response
-                        // For example, you can throw an exception or return null
                         throw Exception("Error: ${jsonResponse.getString("error")}")
                     } else {
                         return WeatherData.fromJson(jsonResponse)
                     }
                 } else {
-                    // Handle error response
-                    // For example, you can throw an exception or return null
                     throw Exception("Error: $responseCode")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Handle exception
-                // For example, you can throw an exception or return null
                 throw e
             } finally {
                 // Close resources
@@ -221,7 +216,8 @@ class WidgetProviderSecond : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.dateSc, result.date)
             remoteViews.setTextViewText(
                 R.id.locStation1,
-                prefManager.locStation1!!)
+                prefManager.locStation1!!
+            )
             remoteViews.setTextViewText(R.id.uvStation1, result.uv1)
             remoteViews.setTextViewText(R.id.tempStation1, result.temperature1)
             remoteViews.setTextViewText(R.id.rainRateSecond1, result.rainRate1)
@@ -230,7 +226,8 @@ class WidgetProviderSecond : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.rrMonthSecond1, resultRr1)
             remoteViews.setTextViewText(
                 R.id.locStation2,
-                prefManager.locStation2!!)
+                prefManager.locStation2!!
+            )
             remoteViews.setTextViewText(R.id.uvStation2, result.uv2)
             remoteViews.setTextViewText(R.id.tempStation2, result.temperature2)
             remoteViews.setTextViewText(R.id.rainRateSecond2, result.rainRate2)
@@ -239,7 +236,8 @@ class WidgetProviderSecond : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.rrMonthSecond2, resultRr2)
             remoteViews.setTextViewText(
                 R.id.locStation3,
-                prefManager.locStation3!!)
+                prefManager.locStation3!!
+            )
             remoteViews.setTextViewText(R.id.uvStation3, result.uv3)
             remoteViews.setTextViewText(R.id.tempStation3, result.temperature3)
             remoteViews.setTextViewText(R.id.rainRateSecond3, result.rainRate3)
@@ -248,7 +246,8 @@ class WidgetProviderSecond : AppWidgetProvider() {
             remoteViews.setTextViewText(R.id.rrMonthSecond3, resultRr3)
             remoteViews.setTextViewText(
                 R.id.locStation4,
-                prefManager.locStation4!!)
+                prefManager.locStation4!!
+            )
             remoteViews.setTextViewText(R.id.uvStation4, result.uv4)
             remoteViews.setTextViewText(R.id.tempStation4, result.temperature4)
             remoteViews.setTextViewText(R.id.rainRateSecond4, result.rainRate4)
