@@ -11,23 +11,21 @@
         android:id="@+id/weatherTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-5dp"
         android:layout_marginLeft="15dp"
         android:layout_below="@id/recom"
         android:text="34"
         android:textColor="@android:color/white"
-        android:textSize="60sp" />
+        android:textSize="55sp" />
 
     <TextView
         android:id="@+id/degree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-5dp"
         android:layout_toRightOf="@id/weatherTemperature"
         android:layout_below="@id/recom"
         android:text="°"
         android:textColor="@color/white"
-        android:textSize="55sp" />
+        android:textSize="50sp" />
 
     <LinearLayout
         android:layout_marginLeft="15dp"
