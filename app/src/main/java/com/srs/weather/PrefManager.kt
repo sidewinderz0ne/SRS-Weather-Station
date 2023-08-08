@@ -147,6 +147,61 @@ class PrefManager(_context: Context) {
             editor.commit()
         }
 
+    var mainDataArray: List<String>?
+        get() {
+            val dataArrayString = pref.getString(dataArrayMain, null)
+            return dataArrayString?.split(",")?.map { it.trim() }
+        }
+        set(dataMain) {
+            val dataArrayString = dataMain?.joinToString(",")
+            editor.putString(dataArrayMain, dataArrayString)
+            editor.commit()
+        }
+
+    var secondDataArray1: List<String>?
+        get() {
+            val dataArrayStringSc1 = pref.getString(dataArraySecond1, null)
+            return dataArrayStringSc1?.split(",")?.map { it.trim() }
+        }
+        set(dataSc1) {
+            val dataArrayStringSc1 = dataSc1?.joinToString(",")
+            editor.putString(dataArraySecond1, dataArrayStringSc1)
+            editor.commit()
+        }
+
+    var secondDataArray2: List<String>?
+        get() {
+            val dataArrayStringSc2 = pref.getString(dataArraySecond2, null)
+            return dataArrayStringSc2?.split(",")?.map { it.trim() }
+        }
+        set(dataSc2) {
+            val dataArrayStringSc2 = dataSc2?.joinToString(",")
+            editor.putString(dataArraySecond2, dataArrayStringSc2)
+            editor.commit()
+        }
+
+    var secondDataArray3: List<String>?
+        get() {
+            val dataArrayStringSc3 = pref.getString(dataArraySecond3, null)
+            return dataArrayStringSc3?.split(",")?.map { it.trim() }
+        }
+        set(dataSc3) {
+            val dataArrayStringSc3 = dataSc3?.joinToString(",")
+            editor.putString(dataArraySecond3, dataArrayStringSc3)
+            editor.commit()
+        }
+
+    var secondDataArray4: List<String>?
+        get() {
+            val dataArrayStringSc4 = pref.getString(dataArraySecond4, null)
+            return dataArrayStringSc4?.split(",")?.map { it.trim() }
+        }
+        set(dataSc4) {
+            val dataArrayStringSc4 = dataSc4?.joinToString(",")
+            editor.putString(dataArraySecond4, dataArrayStringSc4)
+            editor.commit()
+        }
+
     companion object {
         // Shared preferences file name
         private const val PREF_NAME = "sulungresearch"
@@ -156,11 +211,12 @@ class PrefManager(_context: Context) {
 
         const val version_tag = "versionSt"
         const val id_station = "idStation"
+        const val loc_station = "locStation"
+
         const val id_station1 = "idStation1"
         const val id_station2 = "idStation2"
         const val id_station3 = "idStation3"
         const val id_station4 = "idStation4"
-        const val loc_station = "locStation"
         const val loc_station1 = "locStation1"
         const val loc_station2 = "locStation2"
         const val loc_station3 = "locStation3"
@@ -170,6 +226,13 @@ class PrefManager(_context: Context) {
         const val EMAIL = "email"
         const val PASSWORD = "password"
         const val prevAct = "prevAct"
+
+        // Data Widget
+        const val dataArrayMain = "dataMain"
+        const val dataArraySecond1 = "dataSecond1"
+        const val dataArraySecond2 = "dataSecond2"
+        const val dataArraySecond3 = "dataSecond3"
+        const val dataArraySecond4 = "dataSecond4"
     }
 
     init {

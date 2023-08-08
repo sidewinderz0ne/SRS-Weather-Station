@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.AsyncTask
 import android.os.CountDownTimer
 import android.os.Handler
@@ -30,7 +32,13 @@ class WidgetProviderSecond : AppWidgetProvider() {
     ) {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
-            getAllDataStation(context, appWidgetId).execute()
+
+            if (hasNetworkConnection(context)) {
+                FetchWeatherDataTask(context, appWidgetId).execute()
+                getAllDataStation(context, appWidgetId).execute()
+            } else {
+                updateWidgetViewWithStoredData(context, appWidgetManager, appWidgetId)
+            }
         }
     }
 
@@ -124,7 +132,6 @@ class WidgetProviderSecond : AppWidgetProvider() {
         )
         views.setOnClickPendingIntent(R.id.widget_layout_second_id, mainPendingIntent)
 
-        FetchWeatherDataTask(context, appWidgetId).execute()
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
@@ -211,49 +218,86 @@ class WidgetProviderSecond : AppWidgetProvider() {
                 "✕"
             }
 
+            prefManager.secondDataArray1 = listOf(
+                resultRr1,
+                result.uv1,
+                result.temperature1,
+                result.rainRate1,
+                result.humidity1,
+                result.windspeed1,
+                result.date.replace(",", ";")
+            )
+
+            prefManager.secondDataArray2 = listOf(
+                resultRr2,
+                result.uv2,
+                result.temperature2,
+                result.rainRate2,
+                result.humidity2,
+                result.windspeed2
+            )
+
+            prefManager.secondDataArray3 = listOf(
+                resultRr3,
+                result.uv3,
+                result.temperature3,
+                result.rainRate3,
+                result.humidity3,
+                result.windspeed3
+            )
+
+            prefManager.secondDataArray4 = listOf(
+                resultRr4,
+                result.uv4,
+                result.temperature4,
+                result.rainRate4,
+                result.humidity4,
+                result.windspeed4
+            )
+
             val remoteViews =
                 RemoteViews(context.packageName, R.layout.widget_layout_second)
-            remoteViews.setTextViewText(R.id.dateSc, result.date)
+            remoteViews.setTextViewText(R.id.dateSc, prefManager.secondDataArray1!![6].replace(";", ","))
             remoteViews.setTextViewText(
                 R.id.locStation1,
                 prefManager.locStation1!!
             )
-            remoteViews.setTextViewText(R.id.uvStation1, result.uv1)
-            remoteViews.setTextViewText(R.id.tempStation1, result.temperature1)
-            remoteViews.setTextViewText(R.id.rainRateSecond1, result.rainRate1)
-            remoteViews.setTextViewText(R.id.humSecond1, result.humidity1)
-            remoteViews.setTextViewText(R.id.windSpeedSecond1, result.windspeed1)
-            remoteViews.setTextViewText(R.id.rrMonthSecond1, resultRr1)
+            remoteViews.setTextViewText(R.id.uvStation1, prefManager.secondDataArray1!![1])
+            remoteViews.setTextViewText(R.id.tempStation1, prefManager.secondDataArray1!![2])
+            remoteViews.setTextViewText(R.id.rainRateSecond1, prefManager.secondDataArray1!![3])
+            remoteViews.setTextViewText(R.id.humSecond1, prefManager.secondDataArray1!![4])
+            remoteViews.setTextViewText(R.id.windSpeedSecond1, prefManager.secondDataArray1!![5])
+            remoteViews.setTextViewText(R.id.rrMonthSecond1, prefManager.secondDataArray1!![0])
             remoteViews.setTextViewText(
                 R.id.locStation2,
                 prefManager.locStation2!!
             )
-            remoteViews.setTextViewText(R.id.uvStation2, result.uv2)
-            remoteViews.setTextViewText(R.id.tempStation2, result.temperature2)
-            remoteViews.setTextViewText(R.id.rainRateSecond2, result.rainRate2)
-            remoteViews.setTextViewText(R.id.humSecond2, result.humidity2)
-            remoteViews.setTextViewText(R.id.windSpeedSecond2, result.windspeed2)
-            remoteViews.setTextViewText(R.id.rrMonthSecond2, resultRr2)
+            remoteViews.setTextViewText(R.id.uvStation2, prefManager.secondDataArray2!![1])
+            remoteViews.setTextViewText(R.id.tempStation2, prefManager.secondDataArray2!![2])
+            remoteViews.setTextViewText(R.id.rainRateSecond2, prefManager.secondDataArray2!![3])
+            remoteViews.setTextViewText(R.id.humSecond2, prefManager.secondDataArray2!![4])
+            remoteViews.setTextViewText(R.id.windSpeedSecond2, prefManager.secondDataArray2!![5])
+            remoteViews.setTextViewText(R.id.rrMonthSecond2, prefManager.secondDataArray2!![0])
             remoteViews.setTextViewText(
                 R.id.locStation3,
                 prefManager.locStation3!!
             )
-            remoteViews.setTextViewText(R.id.uvStation3, result.uv3)
-            remoteViews.setTextViewText(R.id.tempStation3, result.temperature3)
-            remoteViews.setTextViewText(R.id.rainRateSecond3, result.rainRate3)
-            remoteViews.setTextViewText(R.id.humSecond3, result.humidity3)
-            remoteViews.setTextViewText(R.id.windSpeedSecond3, result.windspeed3)
-            remoteViews.setTextViewText(R.id.rrMonthSecond3, resultRr3)
+            remoteViews.setTextViewText(R.id.uvStation3, prefManager.secondDataArray3!![1])
+            remoteViews.setTextViewText(R.id.tempStation3, prefManager.secondDataArray3!![2])
+            remoteViews.setTextViewText(R.id.rainRateSecond3, prefManager.secondDataArray3!![3])
+            remoteViews.setTextViewText(R.id.humSecond3, prefManager.secondDataArray3!![4])
+            remoteViews.setTextViewText(R.id.windSpeedSecond3, prefManager.secondDataArray3!![5])
+            remoteViews.setTextViewText(R.id.rrMonthSecond3, prefManager.secondDataArray3!![0])
             remoteViews.setTextViewText(
                 R.id.locStation4,
                 prefManager.locStation4!!
             )
-            remoteViews.setTextViewText(R.id.uvStation4, result.uv4)
-            remoteViews.setTextViewText(R.id.tempStation4, result.temperature4)
-            remoteViews.setTextViewText(R.id.rainRateSecond4, result.rainRate4)
-            remoteViews.setTextViewText(R.id.humSecond4, result.humidity4)
-            remoteViews.setTextViewText(R.id.windSpeedSecond4, result.windspeed4)
-            remoteViews.setTextViewText(R.id.rrMonthSecond4, resultRr4)
+            remoteViews.setTextViewText(R.id.uvStation4, prefManager.secondDataArray4!![1])
+            remoteViews.setTextViewText(R.id.tempStation4, prefManager.secondDataArray4!![2])
+            remoteViews.setTextViewText(R.id.rainRateSecond4, prefManager.secondDataArray4!![3])
+            remoteViews.setTextViewText(R.id.humSecond4, prefManager.secondDataArray4!![4])
+            remoteViews.setTextViewText(R.id.windSpeedSecond4, prefManager.secondDataArray4!![5])
+            remoteViews.setTextViewText(R.id.rrMonthSecond4, prefManager.secondDataArray4!![0])
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }
     }
@@ -458,5 +502,71 @@ class WidgetProviderSecond : AppWidgetProvider() {
                 Log.d("logStation", "Gagal insert!")
             }
         }
+    }
+
+    @SuppressLint("ServiceCast")
+    fun hasNetworkConnection(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            // For other device-attached transports like Ethernet, Bluetooth, etc.
+            else -> false
+        }
+    }
+
+    private fun updateWidgetViewWithStoredData(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int
+    ) {
+        val prefManager = PrefManager(context)
+        val remoteViews =
+            RemoteViews(context.packageName, R.layout.widget_layout_second)
+        remoteViews.setTextViewText(R.id.dateSc, prefManager.secondDataArray1!![6].replace(";", ","))
+        remoteViews.setTextViewText(
+            R.id.locStation1,
+            prefManager.locStation1!!
+        )
+        remoteViews.setTextViewText(R.id.uvStation1, prefManager.secondDataArray1!![1])
+        remoteViews.setTextViewText(R.id.tempStation1, prefManager.secondDataArray1!![2])
+        remoteViews.setTextViewText(R.id.rainRateSecond1, prefManager.secondDataArray1!![3])
+        remoteViews.setTextViewText(R.id.humSecond1, prefManager.secondDataArray1!![4])
+        remoteViews.setTextViewText(R.id.windSpeedSecond1, prefManager.secondDataArray1!![5])
+        remoteViews.setTextViewText(R.id.rrMonthSecond1, prefManager.secondDataArray1!![0])
+        remoteViews.setTextViewText(
+            R.id.locStation2,
+            prefManager.locStation2!!
+        )
+        remoteViews.setTextViewText(R.id.uvStation2, prefManager.secondDataArray2!![1])
+        remoteViews.setTextViewText(R.id.tempStation2, prefManager.secondDataArray2!![2])
+        remoteViews.setTextViewText(R.id.rainRateSecond2, prefManager.secondDataArray2!![3])
+        remoteViews.setTextViewText(R.id.humSecond2, prefManager.secondDataArray2!![4])
+        remoteViews.setTextViewText(R.id.windSpeedSecond2, prefManager.secondDataArray2!![5])
+        remoteViews.setTextViewText(R.id.rrMonthSecond2, prefManager.secondDataArray2!![0])
+        remoteViews.setTextViewText(
+            R.id.locStation3,
+            prefManager.locStation3!!
+        )
+        remoteViews.setTextViewText(R.id.uvStation3, prefManager.secondDataArray3!![1])
+        remoteViews.setTextViewText(R.id.tempStation3, prefManager.secondDataArray3!![2])
+        remoteViews.setTextViewText(R.id.rainRateSecond3, prefManager.secondDataArray3!![3])
+        remoteViews.setTextViewText(R.id.humSecond3, prefManager.secondDataArray3!![4])
+        remoteViews.setTextViewText(R.id.windSpeedSecond3, prefManager.secondDataArray3!![5])
+        remoteViews.setTextViewText(R.id.rrMonthSecond3, prefManager.secondDataArray3!![0])
+        remoteViews.setTextViewText(
+            R.id.locStation4,
+            prefManager.locStation4!!
+        )
+        remoteViews.setTextViewText(R.id.uvStation4, prefManager.secondDataArray4!![1])
+        remoteViews.setTextViewText(R.id.tempStation4, prefManager.secondDataArray4!![2])
+        remoteViews.setTextViewText(R.id.rainRateSecond4, prefManager.secondDataArray4!![3])
+        remoteViews.setTextViewText(R.id.humSecond4, prefManager.secondDataArray4!![4])
+        remoteViews.setTextViewText(R.id.windSpeedSecond4, prefManager.secondDataArray4!![5])
+        remoteViews.setTextViewText(R.id.rrMonthSecond4, prefManager.secondDataArray4!![0])
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
     }
 }

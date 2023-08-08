@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.AsyncTask
 import android.os.CountDownTimer
 import android.os.Handler
@@ -30,7 +32,17 @@ class WeatherWidgetProvider : AppWidgetProvider() {
     ) {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
-            getAllDataStation(context, appWidgetId).execute()
+
+            if (hasNetworkConnection(context)) {
+                FetchWeatherDataTask(context, appWidgetId).execute()
+                getAllDataStation(context, appWidgetId).execute()
+            } else {
+                val prefManager = PrefManager(context)
+                val storedData = prefManager.mainDataArray
+                if (storedData != null) {
+                    updateWidgetViewWithStoredData(context, appWidgetManager, appWidgetId)
+                }
+            }
         }
     }
 
@@ -124,7 +136,6 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         )
         views.setOnClickPendingIntent(R.id.weather_widget_layout_id, mainPendingIntent)
 
-        FetchWeatherDataTask(context, appWidgetId).execute()
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
@@ -196,15 +207,26 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 "Tidak Disarankan"
             }
 
+            Log.d("cekData", result.rrMonth)
+
+            prefManager.mainDataArray = listOf(
+                resultRr,
+                result.temperature,
+                result.rainRate,
+                result.humidity,
+                result.windspeed,
+                result.date.replace(",", ";")
+            )
+
             val remoteViews =
                 RemoteViews(context.packageName, R.layout.weather_widget_layout)
-            remoteViews.setTextViewText(R.id.weatherTemperature, result.temperature)
-            remoteViews.setTextViewText(R.id.rainfallRate, result.rainRate)
-            remoteViews.setTextViewText(R.id.humidity, result.humidity)
-            remoteViews.setTextViewText(R.id.windSpeed, result.windspeed)
-            remoteViews.setTextViewText(R.id.date, result.date)
+            remoteViews.setTextViewText(R.id.weatherTemperature, prefManager.mainDataArray!![1])
+            remoteViews.setTextViewText(R.id.rainfallRate, prefManager.mainDataArray!![2])
+            remoteViews.setTextViewText(R.id.humidity, prefManager.mainDataArray!![3])
+            remoteViews.setTextViewText(R.id.windSpeed, prefManager.mainDataArray!![4])
+            remoteViews.setTextViewText(R.id.date, prefManager.mainDataArray!![5].replace(";", ","))
             remoteViews.setTextViewText(R.id.station, "Station: " + prefManager.locStation!!)
-            remoteViews.setTextViewText(R.id.recom, "Pemupukan: $resultRr")
+            remoteViews.setTextViewText(R.id.recom, "Pemupukan: ${prefManager.mainDataArray!![0]}")
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }
     }
@@ -330,5 +352,37 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 Log.d("logStation", "Gagal insert!")
             }
         }
+    }
+
+    @SuppressLint("ServiceCast")
+    fun hasNetworkConnection(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            // For other device-attached transports like Ethernet, Bluetooth, etc.
+            else -> false
+        }
+    }
+
+    private fun updateWidgetViewWithStoredData(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int
+    ) {
+        val prefManager = PrefManager(context)
+        val remoteViews =
+            RemoteViews(context.packageName, R.layout.weather_widget_layout)
+        remoteViews.setTextViewText(R.id.weatherTemperature, prefManager.mainDataArray!![1])
+        remoteViews.setTextViewText(R.id.rainfallRate, prefManager.mainDataArray!![2])
+        remoteViews.setTextViewText(R.id.humidity, prefManager.mainDataArray!![3])
+        remoteViews.setTextViewText(R.id.windSpeed, prefManager.mainDataArray!![4])
+        remoteViews.setTextViewText(R.id.date, prefManager.mainDataArray!![5].replace(";", ","))
+        remoteViews.setTextViewText(R.id.station, "Station: " + prefManager.locStation!!)
+        remoteViews.setTextViewText(R.id.recom, "Pemupukan: ${prefManager.mainDataArray!![0]}")
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
     }
 }

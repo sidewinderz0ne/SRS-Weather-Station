@@ -6,43 +6,51 @@
     android:id="@+id/widget_layout_second_id"
     android:background="@drawable/widget_background">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/srsLogoSc"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/refreshSc"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_toRightOf="@id/srsLogoSc"
-        android:layout_marginTop="13dp"
         android:src="@drawable/baseline_refresh_24" />
 
     <ProgressBar
         android:id="@+id/progressBarSc"
         android:visibility="gone"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="39dp"
+        android:layout_height="37dp"
         android:layout_toRightOf="@id/srsLogoSc"
-        android:layout_marginTop="18dp"
-        android:layout_marginLeft="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="3dp"
         android:indeterminate="false"
         android:max="100"
         android:progress="0"/>
 
     <ImageView
+        android:id="@+id/rain"
+        android:layout_marginTop="10dp"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/rain" />
+
+    <ImageView
         android:id="@+id/srsLogoSc"
         android:layout_marginTop="13dp"
-        android:layout_width="100dp"
+        android:layout_width="90dp"
         android:layout_height="30dp"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="15dp"
         android:layout_alignParentTop="true"
         android:src="@drawable/lowres_putih" />
-
-    <ImageView
-        android:id="@+id/rain"
-        android:layout_marginTop="10dp"
-        android:layout_width="110dp"
-        android:layout_height="40dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/rain" />
 
     <TextView
         android:id="@+id/dateSc"
