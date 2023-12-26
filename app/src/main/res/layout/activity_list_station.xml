@@ -16,22 +16,38 @@
             android:id="@+id/lottieMain"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
-            android:layout_centerInParent="true"
             android:background="@color/white"
             app:lottie_rawRes="@raw/wait"
             app:lottie_autoPlay="true"
             app:lottie_loop="true" />
 
-        <TextView
-            android:id="@+id/tvMainWidget"
-            android:layout_marginTop="40dp"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Main Widget"
-            android:textSize="20sp"
-            android:fontFamily="@font/segoeuib"
-            android:gravity="center|left"
-            tools:ignore="HardcodedText,MissingConstraints,RtlHardcoded" />
+            android:orientation="horizontal"
+            android:layout_marginTop="40dp">
+
+            <TextView
+                android:id="@+id/tvMainWidget"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7"
+                android:text="Main Widget"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/segoeuib"
+                tools:ignore="HardcodedText,MissingConstraints,RtlHardcoded" />
+
+            <ImageView
+                android:id="@+id/ivRefreshList"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="0.3"
+                android:src="@drawable/baseline_refresh_24"
+                android:importantForAccessibility="no"
+                app:tint="@color/black" />
+
+        </LinearLayout>
 
         <include
             android:id="@+id/stationMain"
@@ -45,10 +61,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Second Widget"
+            android:textColor="@color/black"
             android:layout_marginTop="20dp"
             android:textSize="20sp"
             android:fontFamily="@font/segoeuib"
-            android:gravity="center|left" />
+            android:gravity="center|left"
+            tools:ignore="HardcodedText,RtlHardcoded" />
 
         <include
             android:id="@+id/station1"
@@ -83,13 +101,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tvMainWidget"/>
 
         <com.google.android.material.button.MaterialButton
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#6CC24A"
             android:layout_gravity="center"
             android:text="Simpan"
-            android:id="@+id/bt_save_station" />
+            android:id="@+id/bt_save_station"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -131,7 +150,8 @@
                 android:id="@+id/logo_ssms_station"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:importantForAccessibility="no" />
 
             <View
                 android:layout_width="0dp"
@@ -154,7 +174,8 @@
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

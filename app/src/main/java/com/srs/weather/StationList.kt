@@ -8,13 +8,18 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.srs.weather.R.layout.activity_list_station
 import kotlinx.android.synthetic.main.activity_list_station.*
+import kotlinx.android.synthetic.main.activity_login.logo_ssms
+import kotlinx.android.synthetic.main.activity_login.lottie
 import kotlinx.android.synthetic.main.spinner_list.view.*
 import kotlin.system.exitProcess
 
+@Suppress("DEPRECATION")
 class StationList : AppCompatActivity() {
     private var idStationArray = ArrayList<Int>()
     private var locStationArray = ArrayList<String>()
@@ -30,11 +35,11 @@ class StationList : AppCompatActivity() {
     var locStation3 = ""
     var locStation4 = ""
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val prefManager = PrefManager(this)
-
         if (!prefManager.session) {
             prefManager.prevActivity = 1
             // Session is false, redirect to the login activity
@@ -47,12 +52,19 @@ class StationList : AppCompatActivity() {
         setContentView(activity_list_station)
         getListStation()
 
+        Glide.with(this)//GLIDE LOGO FOR LOADING LAYOUT
+            .load(R.mipmap.ic_launcher)
+            .into(logo_ssms_station)
+        lottieStation.setAnimation(R.raw.loading_circle)//ANIMATION WITH LOTTIE FOR LOADING LAYOUT
+        lottieStation.loop(true)
+        lottieStation.playAnimation()
+
         stationMain.spListStation.setItems(locStationArray)
         stationMain.spListStation.setOnItemSelectedListener { view, position, id, item ->
             locStation = locStationArray[position]
             idStation = idStationArray[position]
         }
-        if (!prefManager.locStation.toString().isNullOrEmpty()) {
+        if (prefManager.locStation.toString().isNotEmpty()) {
             stationMain.spListStation.text = prefManager.locStation
             locStation = prefManager.locStation.toString()
             idStation = prefManager.idStation
@@ -100,12 +112,18 @@ class StationList : AppCompatActivity() {
             locStation4 = locStationArray[position]
             idStation4 = idStationArray[position]
         }
-        if (!prefManager.locStation4.toString().isNullOrEmpty()) {
+        if (prefManager.locStation4.toString().isNotEmpty()) {
             station4.spListStation.text = prefManager.locStation4
             locStation4 = prefManager.locStation4.toString()
             idStation4 = prefManager.idStation4
         }
 
+        ivRefreshList.setOnClickListener {
+            tv_hint_loading_station.text = "Sedang memperbarui data.."
+            progressBarStation.visibility = View.VISIBLE
+            AppUtils.checkDataStationWs(this, "", progressBarStation)
+            getListStation()
+        }
 
         bt_save_station.setOnClickListener {
             prefManager.idStation = idStation
@@ -177,6 +195,8 @@ class StationList : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         val homeIntent = Intent(Intent.ACTION_MAIN)
         homeIntent.addCategory(Intent.CATEGORY_HOME)

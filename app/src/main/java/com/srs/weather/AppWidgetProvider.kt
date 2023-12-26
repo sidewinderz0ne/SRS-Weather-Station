@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.srs.weather
 
 import android.annotation.SuppressLint
@@ -21,9 +23,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
+@Suppress("DEPRECATION")
 class WeatherWidgetProvider : AppWidgetProvider() {
-
-    private val ACTION_UPDATE = "com.srs.weather.ACTION_UPDATE"
 
     override fun onUpdate(
         context: Context,
@@ -33,9 +34,14 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
 
-            if (hasNetworkConnection(context)) {
-                FetchWeatherDataTask(context, appWidgetId).execute()
-                getAllDataStation(context, appWidgetId).execute()
+            if (AppUtils.checkConnectionDevice(context)) {
+                if (AppUtils.getCountDataStationWs(context) <= 0) {
+                    AppUtils.checkDataStationWs(context, "first")
+                }
+
+                Handler().postDelayed({
+                    FetchWeatherDataTask(context, appWidgetId).execute()
+                }, 2000)
             } else {
                 val prefManager = PrefManager(context)
                 val storedData = prefManager.mainDataArray
@@ -48,60 +54,42 @@ class WeatherWidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == ACTION_UPDATE) {
+        if (intent.action == AppUtils.ACTION_UPDATE) {
             val appWidgetId = intent.getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID
             )
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                // Handle the click action here
-                Log.d("WeatherWidgetProvider", "Widget clicked!")
+                if (AppUtils.getCountDataStationWs(context) <= 0) {
+                    AppUtils.checkDataStationWs(context, "first")
+                }
+
+                Log.d("WeatherWidgetProvider", "Refresh first widget clicked!")
 
                 val views = RemoteViews(context.packageName, R.layout.weather_widget_layout)
-
-                // Show the progress bar and hide the refresh button
                 views.setViewVisibility(R.id.progressBar, View.VISIBLE)
                 views.setViewVisibility(R.id.refresh, View.GONE)
 
-                // Update the widget to reflect the changes
                 AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views)
 
-                // Set the timer duration (in milliseconds)
                 val timerDuration = 2000L
-
-                // Start the timer
                 val timer = object : CountDownTimer(timerDuration, timerDuration) {
-                    override fun onTick(millisUntilFinished: Long) {
-                        // Not used in this case
-                    }
+                    override fun onTick(millisUntilFinished: Long) {}
 
                     override fun onFinish() {
-                        // Timer finished, switch the visibility of the refresh button and progress bar
                         views.setViewVisibility(R.id.progressBar, View.GONE)
                         views.setViewVisibility(R.id.refresh, View.VISIBLE)
-
-                        // Update the widget to reflect the changes
                         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views)
                     }
                 }
                 timer.start()
 
-                // Execute the FetchWeatherDataTask after the desired timer duration
                 Handler().postDelayed(
                     {
                         FetchWeatherDataTask(context, appWidgetId).execute()
-                        getAllDataStation(context, appWidgetId).execute()
                     },
                     timerDuration
                 )
-            }
-        } else if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
-            val appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
-            if (appWidgetIds != null) {
-                Log.d("WeatherWidgetProvider", "Station saved!")
-                for (appWidgetId in appWidgetIds) {
-                    FetchWeatherDataTask(context, appWidgetId).execute()
-                }
             }
         }
     }
@@ -141,7 +129,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
 
     private fun createUpdateIntent(context: Context, appWidgetId: Int): PendingIntent {
         val intent = Intent(context, WeatherWidgetProvider::class.java)
-        intent.action = ACTION_UPDATE
+        intent.action = AppUtils.ACTION_UPDATE
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         return PendingIntent.getBroadcast(
             context,
@@ -152,12 +140,14 @@ class WeatherWidgetProvider : AppWidgetProvider() {
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     private class FetchWeatherDataTask(
         private val context: Context,
         private val appWidgetId: Int
     ) : AsyncTask<Unit, Unit, WeatherData>() {
         val prefManager = PrefManager(context)
 
+        @Deprecated("Deprecated in Java")
         @SuppressLint("Range")
         override fun doInBackground(vararg params: Unit?): WeatherData {
             var connection: HttpURLConnection? = null
@@ -165,7 +155,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
 
             try {
                 val url =
-                    URL("https://srs-ssms.com/aws_misol/get_aws_last_data.php?idws=${prefManager.idStation}")
+                    URL(AppUtils.mainServer + "aws_misol/get_aws_last_data.php?" +
+                            "idws=${prefManager.idStation}")
                 connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 
@@ -197,17 +188,22 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             }
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onPostExecute(result: WeatherData) {
             super.onPostExecute(result)
             val appWidgetManager = AppWidgetManager.getInstance(context)
 
-            val resultRr = if (result.rrMonth.toInt() in 60..300) {
+            val rrMonth = try {
+                result.rrMonth.toInt()
+            } catch (e: Exception) {
+                0
+            }
+            val resultRr = if (rrMonth in 60..300) {
                 "Disarankan"
             } else {
                 "Tidak Disarankan"
             }
-
-            Log.d("cekData", result.rrMonth)
+            Log.d("cekData", "rrMonth: " + result.rrMonth)
 
             prefManager.mainDataArray = listOf(
                 resultRr,
@@ -266,105 +262,6 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     rrMonth
                 )
             }
-        }
-    }
-
-    private class getAllDataStation(
-        private val context: Context,
-        private val appWidgetId: Int
-    ) : AsyncTask<Unit, Unit, Boolean>() {
-
-        override fun doInBackground(vararg params: Unit?): Boolean {
-            var connection: HttpURLConnection? = null
-            var reader: BufferedReader? = null
-
-            try {
-                val prefManager = PrefManager(context)
-                val url =
-                    URL("https://srs-ssms.com/aws_misol/getListStation.php?version=${prefManager.versionSt}")
-                connection = url.openConnection() as HttpURLConnection
-                connection.requestMethod = "GET"
-
-                val responseCode = connection.responseCode
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    val inputStream = connection.inputStream
-                    reader = BufferedReader(InputStreamReader(inputStream))
-                    val response = StringBuilder()
-                    var line: String?
-                    while (reader.readLine().also { line = it } != null) {
-                        response.append(line)
-                    }
-                    val jObj = JSONObject(response.toString())
-                    val success = jObj.getInt("status")
-
-                    val databaseHandler = DBHelper(context)
-                    if (success == 1) {
-                        val version = jObj.getInt("version")
-                        databaseHandler.deleteDb()
-                        val dataListStation = jObj.getJSONObject("listData")
-                        val splitId = dataListStation.getJSONArray("id")
-                        val splitLoc = dataListStation.getJSONArray("loc")
-
-                        var idArray = ArrayList<Int>()
-                        var locArray = ArrayList<String>()
-                        for (i in 0 until splitId.length()) {
-                            idArray.add(splitId.getInt(i))
-                            locArray.add(splitLoc.getString(i))
-                        }
-
-                        var statusQuery = 1L
-                        for (i in 0 until idArray.size) {
-                            val status = databaseHandler.addWeatherStationList(
-                                idws = idArray[i],
-                                loc = locArray[i]
-                            )
-                            if (status == 0L) {
-                                statusQuery = 0L
-                            }
-                        }
-
-                        if (statusQuery > -1) {
-                            Log.d("logStation", "Sukses insert!")
-                            prefManager.versionSt = version
-                        } else {
-                            Log.d("logStation", "Terjadi kesalahan, hubungi pengembang")
-                            databaseHandler.deleteDb()
-                        }
-                    }
-                    return true
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                // Close resources
-                reader?.close()
-                connection?.disconnect()
-            }
-
-            return false
-        }
-
-        override fun onPostExecute(result: Boolean) {
-            super.onPostExecute(result)
-            if (result) {
-                Log.d("logStation", "Sukses insert!")
-            } else {
-                Log.d("logStation", "Gagal insert!")
-            }
-        }
-    }
-
-    @SuppressLint("ServiceCast")
-    fun hasNetworkConnection(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkCapabilities = connectivityManager.activeNetwork ?: return false
-        val activeNetwork = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-
-        return when {
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            // For other device-attached transports like Ethernet, Bluetooth, etc.
-            else -> false
         }
     }
 

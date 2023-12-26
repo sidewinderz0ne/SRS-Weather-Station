@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_below="@id/recom"
-        android:text="34"
+        android:text="-"
         android:textColor="@android:color/white"
         android:textSize="55sp" />
 
@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="99"
+                android:text="-"
                 android:textColor="@android:color/white"
                 android:textSize="25sp" />
 
@@ -92,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="99"
+                android:text="-"
                 android:textColor="@android:color/white"
                 android:textSize="25sp" />
 
@@ -127,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="99"
+                android:text="-"
                 android:textColor="@android:color/white"
                 android:textSize="25sp" />
 
@@ -153,7 +153,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="31 Desember, 23:23"
+        android:text="-"
         android:textColor="@android:color/white"
         android:textSize="10sp" />
 
@@ -207,7 +207,7 @@
         android:layout_alignLeft="@id/srsLogo"
         android:layout_alignStart="@id/srsLogo"
         android:layout_below="@id/srsLogo"
-        android:text="Station: SRS"
+        android:text="Station: -"
         android:textColor="@android:color/white"
         android:textSize="10sp" />
 
@@ -218,7 +218,7 @@
         android:layout_alignLeft="@id/station"
         android:layout_alignStart="@id/station"
         android:layout_below="@id/station"
-        android:text="Pemupukan: Tidak Disarankan"
+        android:text="Pemupukan: -"
         android:textColor="@android:color/white"
         android:textSize="10sp" />
 

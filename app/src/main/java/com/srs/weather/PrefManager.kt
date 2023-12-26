@@ -43,7 +43,7 @@ class PrefManager(_context: Context) {
         }
 
     var idStation: Int
-        get() = pref.getInt(id_station, 15)
+        get() = pref.getInt(id_station, 0)
         set(idStCount) {
             editor.putInt(id_station, idStCount)
             editor.commit()
@@ -78,7 +78,7 @@ class PrefManager(_context: Context) {
         }
 
     var locStation: String?
-        get() = pref.getString(loc_station, "SRS")
+        get() = pref.getString(loc_station, "")
         set(locStCount) {
             editor.putString(loc_station, locStCount)
             editor.commit()
@@ -109,6 +109,13 @@ class PrefManager(_context: Context) {
         get() = pref.getString(loc_station4, "SRS")
         set(locStCount4) {
             editor.putString(loc_station4, locStCount4)
+            editor.commit()
+        }
+
+    var hexStation: String?
+        get() = pref.getString(HEX_STATION, "")
+        set(hexStation) {
+            editor.putString(HEX_STATION, hexStation)
             editor.commit()
         }
 
@@ -226,6 +233,7 @@ class PrefManager(_context: Context) {
         const val EMAIL = "email"
         const val PASSWORD = "password"
         const val prevAct = "prevAct"
+        const val HEX_STATION = "hexStation"
 
         // Data Widget
         const val dataArrayMain = "dataMain"
