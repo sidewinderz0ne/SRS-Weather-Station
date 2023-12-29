@@ -3,13 +3,12 @@
 package com.srs.weather
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.AsyncTask
 import android.os.CountDownTimer
 import android.os.Handler
@@ -39,6 +38,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     AppUtils.checkDataStationWs(context, "first")
                 }
 
+                schedulePeriodicUpdate(context, appWidgetId)
                 Handler().postDelayed({
                     FetchWeatherDataTask(context, appWidgetId).execute()
                 }, 2000)
@@ -281,5 +281,25 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         remoteViews.setTextViewText(R.id.station, "Station: " + prefManager.locStation!!)
         remoteViews.setTextViewText(R.id.recom, "Pemupukan: ${prefManager.mainDataArray!![0]}")
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
+    }
+
+    private fun schedulePeriodicUpdate(context: Context, appWidgetId: Int) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val pendingIntent = createUpdateIntent(context, appWidgetId)
+        val updateIntervalMillis = try {
+            AppWidgetManager.getInstance(context)
+                .getAppWidgetInfo(appWidgetId)
+                .updatePeriodMillis
+        } catch (e: Exception) {
+            0
+        }
+        if (updateIntervalMillis > 0) {
+            alarmManager.setRepeating(
+                AlarmManager.RTC,
+                System.currentTimeMillis() + updateIntervalMillis,
+                updateIntervalMillis.toLong(),
+                pendingIntent
+            )
+        }
     }
 }
