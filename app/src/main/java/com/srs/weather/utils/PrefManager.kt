@@ -1,18 +1,22 @@
-package com.srs.weather
+package com.srs.weather.utils
 
 import android.content.Context
 import android.content.SharedPreferences
 
 class PrefManager(_context: Context) {
-    var pref: SharedPreferences
-    var editor: SharedPreferences.Editor
+    private var pref: SharedPreferences
+    private var editor: SharedPreferences.Editor
     var context: Context? = null
 
     // shared pref mode
-    var privateMode = 0
+    private var privateMode = 0
 
-    // shared pref mode
-    var PRIVATE_MODE = 0
+    var isFromWidget: Boolean
+        get() = pref.getBoolean(WIDGET_TAG, false)
+        set(isFromWidget) {
+            editor.putBoolean(WIDGET_TAG, isFromWidget)
+            editor.commit()
+        }
 
     var isFirstTimeLaunch: Boolean
         get() = pref.getBoolean(IS_FIRST_TIME_LAUNCH, true)
@@ -32,13 +36,6 @@ class PrefManager(_context: Context) {
         get() = pref.getBoolean(SESSION, false)
         set(sessionActive) {
             editor.putBoolean(SESSION, sessionActive)
-            editor.commit()
-        }
-
-    var versionSt: Int
-        get() = pref.getInt(version_tag, 0)
-        set(versionStCount) {
-            editor.putInt(version_tag, versionStCount)
             editor.commit()
         }
 
@@ -147,24 +144,6 @@ class PrefManager(_context: Context) {
             editor.commit()
         }
 
-    var prevActivity: Int
-        get() = pref.getInt(prevAct, 0)
-        set(prev) {
-            editor.putInt(prevAct, prev)
-            editor.commit()
-        }
-
-    var mainDataArray: List<String>?
-        get() {
-            val dataArrayString = pref.getString(dataArrayMain, null)
-            return dataArrayString?.split(",")?.map { it.trim() }
-        }
-        set(dataMain) {
-            val dataArrayString = dataMain?.joinToString(",")
-            editor.putString(dataArrayMain, dataArrayString)
-            editor.commit()
-        }
-
     var secondDataArray1: List<String>?
         get() {
             val dataArrayStringSc1 = pref.getString(dataArraySecond1, null)
@@ -216,7 +195,7 @@ class PrefManager(_context: Context) {
         private const val LOGIN = "Login"
         private const val SESSION = "Session"
 
-        const val version_tag = "versionSt"
+        const val WIDGET_TAG = "widget_act"
         const val id_station = "idStation"
         const val loc_station = "locStation"
 
@@ -232,11 +211,9 @@ class PrefManager(_context: Context) {
         const val NAME = "name"
         const val EMAIL = "email"
         const val PASSWORD = "password"
-        const val prevAct = "prevAct"
         const val HEX_STATION = "hexStation"
 
         // Data Widget
-        const val dataArrayMain = "dataMain"
         const val dataArraySecond1 = "dataSecond1"
         const val dataArraySecond2 = "dataSecond2"
         const val dataArraySecond3 = "dataSecond3"
@@ -246,15 +223,5 @@ class PrefManager(_context: Context) {
     init {
         pref = _context.getSharedPreferences(PREF_NAME, privateMode)
         editor = pref.edit()
-    }
-
-    fun prefManag(context: Context) {
-        this.context = context
-        pref = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-        editor = pref.edit()
-    }
-
-    fun timeLaunch(): Boolean {
-        return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true)
     }
 }

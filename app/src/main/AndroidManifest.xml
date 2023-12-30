@@ -17,28 +17,21 @@
         tools:targetApi="34">
 
         <activity
-            android:name=".WeatherWidgetConfigureActivity"
+            android:name=".ui.view.MainActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.view.StationList"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".StationList"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".WebView"
+            android:name=".ui.view.WebView"
             android:exported="false"
             android:screenOrientation="landscape">
             <meta-data
@@ -46,7 +39,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Login"
+            android:name=".ui.view.Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,10 +51,11 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <receiver
-            android:name=".WeatherWidgetProvider"
+            android:name=".ui.widget.WeatherWidgetProvider"
             android:label="@string/widget_label"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.srs.weather.ACTION_UPDATE" />
@@ -71,9 +65,9 @@
                 android:resource="@xml/weather_widget_provider" />
         </receiver>
         <receiver
-            android:name=".WidgetProviderSecond"
+            android:name=".ui.widget.WidgetProviderSecond"
             android:label="@string/widget_label_second"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.srs.weather.ACTION_UPDATE_SECOND" />

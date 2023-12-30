@@ -1,4 +1,4 @@
-package com.srs.weather
+package com.srs.weather.data.database
 
 import android.content.ContentValues
 import android.content.Context
@@ -9,23 +9,29 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
     companion object {
         const val DATABASE_NAME = "weather"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val dbTabStationList = "weather_station_list"
+        const val dbTabDataWidget = "widget_data"
 
         const val db_id = "id"
         const val db_loc = "loc"
+        const val db_response_data = "response_data"
+        const val db_widget = "widget"
 
     }
 
+    private val createTableWeatherList = "CREATE TABLE $dbTabStationList ($db_id INTEGER, $db_loc VARCHAR)"
+    private val createTableWidgetData = "CREATE TABLE $dbTabDataWidget ($db_id INTEGER, $db_response_data TEXT, $db_widget INTEGER)"
+
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableWeatherList = "CREATE TABLE $dbTabStationList ($db_id INTEGER, $db_loc VARCHAR)"
         db.execSQL(createTableWeatherList)
+        db.execSQL(createTableWidgetData)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Handle database upgrade if needed
-        db.execSQL("DROP TABLE IF EXISTS $dbTabStationList")
-        onCreate(db)
+        if (oldVersion < 2) {
+            db.execSQL(createTableWidgetData)
+        }
     }
 
     fun addWeatherStationList(

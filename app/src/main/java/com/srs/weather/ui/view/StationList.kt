@@ -1,55 +1,46 @@
-package com.srs.weather
+package com.srs.weather.ui.view
 
 import android.annotation.SuppressLint
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.srs.weather.R
 import com.srs.weather.R.layout.activity_list_station
+import com.srs.weather.data.database.DBHelper
+import com.srs.weather.ui.widget.WeatherWidgetProvider
+import com.srs.weather.ui.widget.WidgetProviderSecond
+import com.srs.weather.utils.AppUtils
+import com.srs.weather.utils.PrefManager
 import kotlinx.android.synthetic.main.activity_list_station.*
-import kotlinx.android.synthetic.main.activity_login.logo_ssms
-import kotlinx.android.synthetic.main.activity_login.lottie
 import kotlinx.android.synthetic.main.spinner_list.view.*
-import kotlin.system.exitProcess
 
 @Suppress("DEPRECATION")
 class StationList : AppCompatActivity() {
     private var idStationArray = ArrayList<Int>()
     private var locStationArray = ArrayList<String>()
 
-    var idStation = 0
-    var idStation1 = 0
-    var idStation2 = 0
-    var idStation3 = 0
-    var idStation4 = 0
-    var locStation = ""
-    var locStation1 = ""
-    var locStation2 = ""
-    var locStation3 = ""
-    var locStation4 = ""
+    private var idStation = 0
+    private var idStation1 = 0
+    private var idStation2 = 0
+    private var idStation3 = 0
+    private var idStation4 = 0
+    private var locStation = ""
+    private var locStation1 = ""
+    private var locStation2 = ""
+    private var locStation3 = ""
+    private var locStation4 = ""
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(activity_list_station)
 
         val prefManager = PrefManager(this)
-        if (!prefManager.session) {
-            prefManager.prevActivity = 1
-            // Session is false, redirect to the login activity
-            val intent = Intent(this, Login::class.java)
-            startActivity(intent)
-            finish() // Optional: Call finish() to close the current activity
-            return // Optional: Add a return statement to prevent further execution of the code in onCreate
-        }
-
-        setContentView(activity_list_station)
         getListStation()
 
         Glide.with(this)//GLIDE LOGO FOR LOADING LAYOUT
@@ -140,18 +131,12 @@ class StationList : AppCompatActivity() {
 
             // Trigger widget update for the first widget
             val updateIntent1 = Intent(this, WeatherWidgetProvider::class.java)
-            updateIntent1.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            updateIntent1.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, AppWidgetManager.getInstance(applicationContext).getAppWidgetIds(
-                ComponentName(applicationContext, WeatherWidgetProvider::class.java)
-            ))
+            updateIntent1.action = AppUtils.ACTION_REFRESH_CLICK
             sendBroadcast(updateIntent1)
 
             // Trigger widget update for the second widget
             val updateIntent2 = Intent(this, WidgetProviderSecond::class.java)
-            updateIntent2.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            updateIntent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, AppWidgetManager.getInstance(applicationContext).getAppWidgetIds(
-                ComponentName(applicationContext, WidgetProviderSecond::class.java)
-            ))
+            updateIntent2.action = AppUtils.ACTION_REFRESH_CLICK_SCD
             sendBroadcast(updateIntent2)
 
             // Navigate back to the home screen
@@ -159,6 +144,7 @@ class StationList : AppCompatActivity() {
             homeIntent.addCategory(Intent.CATEGORY_HOME)
             homeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(homeIntent)
+            finishAffinity()
         }
     }
 
@@ -195,12 +181,9 @@ class StationList : AppCompatActivity() {
         }
     }
 
-    @Deprecated("Deprecated in Java")
+    @Deprecated("Deprecated in Java", ReplaceWith("finishAffinity()"))
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
-        val homeIntent = Intent(Intent.ACTION_MAIN)
-        homeIntent.addCategory(Intent.CATEGORY_HOME)
-        homeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(homeIntent)
+        finishAffinity()
     }
 }

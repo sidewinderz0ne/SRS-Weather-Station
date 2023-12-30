@@ -1,4 +1,4 @@
-package com.srs.weather
+package com.srs.weather.ui.view
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
@@ -13,6 +13,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.srs.weather.R
+import com.srs.weather.utils.PrefManager
 
 
 class WebView : AppCompatActivity() {
@@ -93,6 +95,8 @@ class WebView : AppCompatActivity() {
     }
 
     // Handle the back button press event to navigate back in the WebView history
+    @Deprecated("Deprecated in Java")
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         if (webView.canGoBack()) {
             webView.goBack()

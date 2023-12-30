@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.srs.weather
+package com.srs.weather.ui.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -32,11 +32,13 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import androidx.biometric.BiometricPrompt
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.srs.weather.BuildConfig
+import com.srs.weather.R
+import com.srs.weather.utils.PrefManager
 
 @Suppress("DEPRECATION")
 class Login : AppCompatActivity() {
@@ -182,14 +184,15 @@ class Login : AppCompatActivity() {
 
                                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                                 progressBarHolder.visibility = View.GONE
-                                if (prefManager.prevActivity == 0) {
-                                    val intent = Intent(this@Login, WebView::class.java)
-                                    startActivity(intent)
+                                val intent: Intent
+                                if (prefManager.isFromWidget) {
+                                    prefManager.isFromWidget = false
+                                    intent = Intent(this@Login, StationList::class.java)
                                 } else {
-                                    prefManager.prevActivity = 0
-                                    val intent = Intent(this@Login, StationList::class.java)
-                                    startActivity(intent)
+                                    intent = Intent(this@Login, WebView::class.java)
                                 }
+                                startActivity(intent)
+                                finishAffinity()
                             } else {
                                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                                 progressBarHolder.visibility = View.GONE
@@ -252,14 +255,15 @@ class Login : AppCompatActivity() {
         if (prefManager.name == null || prefManager.name == "") { //misal prefmanager name kosong diisi
             prefManager.name = etUser.text.toString()
         }
-        if (prefManager.prevActivity == 0) {
-            val intent = Intent(this@Login, WebView::class.java)
-            startActivity(intent)
+        val intent: Intent
+        if (prefManager.isFromWidget) {
+            prefManager.isFromWidget = false
+            intent = Intent(this@Login, StationList::class.java)
         } else {
-            prefManager.prevActivity = 0
-            val intent = Intent(this@Login, StationList::class.java)
-            startActivity(intent)
+            intent = Intent(this@Login, WebView::class.java)
         }
+        startActivity(intent)
+        finishAffinity()
     }
 
     //fungsi finger print

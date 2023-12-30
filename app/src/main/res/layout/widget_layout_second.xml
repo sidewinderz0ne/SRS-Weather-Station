@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="350dp"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     android:id="@+id/widget_layout_second_id"
     android:background="@drawable/widget_background">
 
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="31 Desember, 23:23"
+        android:text="-"
         android:textColor="@android:color/white"
         android:textSize="10sp" />
 
@@ -389,6 +389,7 @@
         android:layout_below="@id/llRow3"
         android:layout_alignParentStart="true"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginHorizontal="15dp"
         android:orientation="horizontal">
 

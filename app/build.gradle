@@ -7,7 +7,7 @@ plugins {
 android {
     def versionMajor = 1
     def versionMinor = 0
-    def versionPatch = 10
+    def versionPatch = 11
 
     namespace 'com.srs.weather'
     compileSdk 34
@@ -67,4 +67,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'androidx.biometric:biometric:1.1.0'
     implementation 'com.google.android.play:core-ktx:1.8.1'
+
+    implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
 }
