@@ -86,7 +86,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/wiget_provider_third" />
+                android:resource="@xml/widget_provider_third" />
         </receiver>
 
     </application>
