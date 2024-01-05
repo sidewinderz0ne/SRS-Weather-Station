@@ -25,7 +25,7 @@ import com.srs.weather.utils.AppUtils
 import com.srs.weather.utils.PrefManager
 import org.json.JSONObject
 
-class WeatherWidgetProvider : AppWidgetProvider(), AppUtils.DataWidgetResponse {
+class WidgetProviderFirst : AppWidgetProvider(), AppUtils.DataWidgetResponse {
 
     private var views: RemoteViews? = null
     private var context: Context? = null
@@ -39,7 +39,7 @@ class WeatherWidgetProvider : AppWidgetProvider(), AppUtils.DataWidgetResponse {
         val appWidgetIds = appWidgetManager.getAppWidgetIds(
             ComponentName(
                 context!!,
-                WeatherWidgetProvider::class.java
+                WidgetProviderFirst::class.java
             )
         )
 
@@ -118,7 +118,7 @@ class WeatherWidgetProvider : AppWidgetProvider(), AppUtils.DataWidgetResponse {
         val appWidgetIds = appWidgetManager.getAppWidgetIds(
             ComponentName(
                 context,
-                WeatherWidgetProvider::class.java
+                WidgetProviderFirst::class.java
             )
         )
 
@@ -215,7 +215,7 @@ class WeatherWidgetProvider : AppWidgetProvider(), AppUtils.DataWidgetResponse {
             val appWidgetIds = appWidgetManager.getAppWidgetIds(
                 ComponentName(
                     context,
-                    WeatherWidgetProvider::class.java
+                    WidgetProviderFirst::class.java
                 )
             )
             appWidgetIds.forEach { appWidgetId ->
@@ -237,7 +237,7 @@ class WeatherWidgetProvider : AppWidgetProvider(), AppUtils.DataWidgetResponse {
     }
 
     private fun createUpdatePendingIntent(context: Context, appWidgetId: Int): PendingIntent {
-        val intent = Intent(context, WeatherWidgetProvider::class.java)
+        val intent = Intent(context, WidgetProviderFirst::class.java)
         intent.action = AppUtils.ACTION_REFRESH_CLICK
         return PendingIntent.getBroadcast(
             context,
@@ -267,7 +267,7 @@ class WeatherWidgetProvider : AppWidgetProvider(), AppUtils.DataWidgetResponse {
             val appWidgetIds = appWidgetManager.getAppWidgetIds(
                 ComponentName(
                     context,
-                    WeatherWidgetProvider::class.java
+                    WidgetProviderFirst::class.java
                 )
             )
             appWidgetIds.forEach { appWidgetId ->

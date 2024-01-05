@@ -53,12 +53,12 @@
         </activity>
 
         <receiver
-            android:name=".ui.widget.WeatherWidgetProvider"
+            android:name=".ui.widget.WidgetProviderFirst"
             android:label="@string/widget_label"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.srs.weather.ACTION_UPDATE" />
+                <action android:name="com.srs.weather.ACTION_REFRESH_CLICK" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
@@ -70,11 +70,23 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.srs.weather.ACTION_UPDATE_SECOND" />
+                <action android:name="com.srs.weather.ACTION_REFRESH_CLICK_SCD" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider_second" />
+        </receiver>
+        <receiver
+            android:name=".ui.widget.WidgetProviderThird"
+            android:label="@string/widget_label_third"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.srs.weather.ACTION_REFRESH_CLICK_THR" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/wiget_provider_third" />
         </receiver>
 
     </application>

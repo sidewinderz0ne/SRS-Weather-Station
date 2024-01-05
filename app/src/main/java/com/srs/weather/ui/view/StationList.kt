@@ -12,8 +12,9 @@ import com.bumptech.glide.Glide
 import com.srs.weather.R
 import com.srs.weather.R.layout.activity_list_station
 import com.srs.weather.data.database.DBHelper
-import com.srs.weather.ui.widget.WeatherWidgetProvider
+import com.srs.weather.ui.widget.WidgetProviderFirst
 import com.srs.weather.ui.widget.WidgetProviderSecond
+import com.srs.weather.ui.widget.WidgetProviderThird
 import com.srs.weather.utils.AppUtils
 import com.srs.weather.utils.PrefManager
 import kotlinx.android.synthetic.main.activity_list_station.*
@@ -79,7 +80,7 @@ class StationList : AppCompatActivity() {
             locStation2 = locStationArray[position]
             idStation2 = idStationArray[position]
         }
-        if (!prefManager.locStation2.toString().isNullOrEmpty()) {
+        if (prefManager.locStation2.toString().isNotEmpty()) {
             station2.spListStation.text = prefManager.locStation2
             locStation2 = prefManager.locStation2.toString()
             idStation2 = prefManager.idStation2
@@ -91,7 +92,7 @@ class StationList : AppCompatActivity() {
             locStation3 = locStationArray[position]
             idStation3 = idStationArray[position]
         }
-        if (!prefManager.locStation3.toString().isNullOrEmpty()) {
+        if (prefManager.locStation3.toString().isNotEmpty()) {
             station3.spListStation.text = prefManager.locStation3
             locStation3 = prefManager.locStation3.toString()
             idStation3 = prefManager.idStation3
@@ -130,7 +131,7 @@ class StationList : AppCompatActivity() {
             Toast.makeText(applicationContext, "Data berhasil disimpan", Toast.LENGTH_SHORT).show()
 
             // Trigger widget update for the first widget
-            val updateIntent1 = Intent(this, WeatherWidgetProvider::class.java)
+            val updateIntent1 = Intent(this, WidgetProviderFirst::class.java)
             updateIntent1.action = AppUtils.ACTION_REFRESH_CLICK
             sendBroadcast(updateIntent1)
 
@@ -138,6 +139,11 @@ class StationList : AppCompatActivity() {
             val updateIntent2 = Intent(this, WidgetProviderSecond::class.java)
             updateIntent2.action = AppUtils.ACTION_REFRESH_CLICK_SCD
             sendBroadcast(updateIntent2)
+
+            // Trigger widget update for the third widget
+            val updateIntent3 = Intent(this, WidgetProviderThird::class.java)
+            updateIntent3.action = AppUtils.ACTION_REFRESH_CLICK_THR
+            sendBroadcast(updateIntent3)
 
             // Navigate back to the home screen
             val homeIntent = Intent(Intent.ACTION_MAIN)
@@ -148,14 +154,14 @@ class StationList : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("Range")
+    @SuppressLint("Range", "Recycle")
     private fun getListStation() {
         idStationArray.clear()
         locStationArray.clear()
         val selectQuery =
             "SELECT  * FROM ${DBHelper.dbTabStationList} ORDER BY ${DBHelper.db_id} ASC"
         val db = DBHelper(this).readableDatabase
-        var i: Cursor?
+        val i: Cursor?
         try {
             i = db.rawQuery(selectQuery, null)
             if (i.moveToFirst()) {

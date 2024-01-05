@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_rounded_20"
+    android:backgroundTint="#B2000000"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/ivLocationWidget"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/lowres_putih"
+        tools:ignore="ContentDescription,UseAppTint" />
+
+    <TextView
+        android:id="@+id/tvLocationWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ivLocationWidget"
+        android:layout_alignBottom="@+id/ivLocationWidget"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/ivLocationWidget"
+        android:fontFamily="@font/helvetica"
+        android:gravity="center"
+        android:text="No data found"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/ivRefreshWidget"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/baseline_refresh_24"
+        android:tint="@color/white"
+        tools:ignore="ContentDescription,UseAppTint" />
+
+    <ProgressBar
+        android:id="@+id/pbRefreshWidget"
+        android:visibility="gone"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorGreen_A400"
+        android:max="100"
+        android:progress="0"/>
+
+    <ImageView
+        android:id="@+id/ivRow1"
+        android:layout_width="25dp"
+        android:layout_height="18dp"
+        android:layout_below="@id/ulHeader"
+        android:layout_toStartOf="@id/ulColumn"
+        android:src="@drawable/baseline_device_thermostat_24"
+        tools:ignore="ContentDescription,UseAppTint"
+        android:tint="@color/white" />
+
+    <ImageView
+        android:id="@+id/ivRow2"
+        app:tint="@color/white"
+        android:layout_width="25dp"
+        android:layout_height="18dp"
+        android:layout_below="@id/ivRow1"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/rain"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/ivRow3"
+        app:tint="@color/white"
+        android:layout_width="25dp"
+        android:layout_height="18dp"
+        android:layout_below="@id/ivRow2"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_baseline_humidity_24"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/ivRow4"
+        app:tint="@color/white"
+        android:layout_width="25dp"
+        android:layout_height="18dp"
+        android:layout_below="@id/ivRow3"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_baseline_wind_24"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/ulHeader"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/llHeaderThird"
+        android:layout_marginVertical="5dp"
+        android:background="@drawable/underline_shape" />
+
+    <TextView
+        android:id="@+id/ulColumn"
+        android:layout_width="1.25dp"
+        android:layout_height="94dp"
+        android:layout_below="@id/llHeaderThird"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginVertical="5dp"
+        android:layout_toEndOf="@id/ivRow4"
+        android:background="@drawable/underline_shape" />
+
+    <LinearLayout
+        android:id="@+id/llHeaderThird"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivLocationWidget"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@id/ulColumn"
+        android:orientation="horizontal">
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llRow1Third"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ulHeader"
+        android:layout_toEndOf="@id/ulColumn"
+        android:orientation="horizontal">
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llRow2Third"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llRow1Third"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/ulColumn"
+        android:orientation="horizontal">
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llRow3Third"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llRow2Third"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/ulColumn"
+        android:orientation="horizontal">
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llRow4Third"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llRow3Third"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/ulColumn"
+        android:orientation="horizontal">
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+        <include layout="@layout/text_widget_layout" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llLastDataWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ulColumn"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        tools:ignore="DisableBaselineAlignment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/bg_rounded_20"
+                android:backgroundTint="#9C9C9C"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="5dp"
+                    android:padding="5dp"
+                    android:src="@drawable/baseline_device_thermostat_24"
+                    tools:ignore="ContentDescription,UseAppTint"
+                    android:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvTempWidget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:fontFamily="@font/helvetica"
+                    android:gravity="end"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/bg_rounded_20"
+                android:backgroundTint="#9C9C9C"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    app:tint="@color/white"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="5dp"
+                    android:padding="5dp"
+                    android:src="@drawable/rain"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tvRrWidget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:fontFamily="@font/helvetica"
+                    android:gravity="end"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/bg_rounded_20"
+                android:backgroundTint="#9C9C9C"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    app:tint="@color/white"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="5dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_baseline_humidity_24"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tvHumWidget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:fontFamily="@font/helvetica"
+                    android:gravity="end"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/bg_rounded_20"
+                android:backgroundTint="#9C9C9C"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    app:tint="@color/white"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="5dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_baseline_wind_24"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tvWsWidget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:fontFamily="@font/helvetica"
+                    android:gravity="end"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_rounded_20"
+            android:backgroundTint="#9C9C9C"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="10dp"
+                android:padding="5dp"
+                android:src="@drawable/baseline_calendar_today_24"
+                android:tint="@color/white"
+                tools:ignore="ContentDescription,UseAppTint" />
+
+            <TextView
+                android:id="@+id/tvLastWidget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="10dp"
+                android:fontFamily="@font/helvetica"
+                android:text="-"
+                android:textColor="@color/white"
+                android:textSize="11sp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

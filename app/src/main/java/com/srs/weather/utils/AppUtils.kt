@@ -1,10 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package com.srs.weather.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.database.sqlite.SQLiteException
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
@@ -18,13 +18,14 @@ import com.android.volley.toolbox.Volley
 import com.srs.weather.BuildConfig.*
 import com.srs.weather.data.database.DBHelper
 import com.srs.weather.data.database.DBHelper.Companion.dbTabStationList
-import com.srs.weather.data.database.DBHelper.Companion.db_id
-import com.srs.weather.data.database.DBHelper.Companion.db_loc
 import com.srs.weather.ui.viewModel.DataWidgetAwsViewModel
-import com.srs.weather.ui.widget.WeatherWidgetProvider
+import com.srs.weather.ui.widget.WidgetProviderFirst
 import com.srs.weather.ui.widget.WidgetProviderSecond
+import com.srs.weather.ui.widget.WidgetProviderThird
 import org.json.JSONException
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object AppUtils {
 
@@ -39,6 +40,74 @@ object AppUtils {
 
     const val ACTION_REFRESH_CLICK = "$APPLICATION_ID.ACTION_REFRESH_CLICK"
     const val ACTION_REFRESH_CLICK_SCD = "$APPLICATION_ID.ACTION_REFRESH_CLICK_SCD"
+    const val ACTION_REFRESH_CLICK_THR = "$APPLICATION_ID.ACTION_REFRESH_CLICK_THR"
+
+    fun formatDate(inputDateStr: String): String {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale("id", "ID"))
+        val outputFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
+        val date = inputFormat.parse(inputDateStr)
+        return outputFormat.format(date!!)
+    }
+
+    fun checkDataWidgetAws3(
+        context: Context,
+        prefManager: PrefManager,
+        dataWidgetAwsViewModel: DataWidgetAwsViewModel,
+        callback: DataWidgetResponse? = null
+    ) {
+        val strReq: StringRequest =
+            @SuppressLint("SetTextI18n")
+            object : StringRequest(
+                Method.POST,
+                mainServer + "aws_misol/getLastSixHours.php",
+                Response.Listener { response ->
+                    try {
+                        val jObj = JSONObject(response)
+
+                        Log.d(LOG_WIDGET, "Response success3!")
+                        dataWidgetAwsViewModel.deleteDataWidgetAws("3")
+                        dataWidgetAwsViewModel.insertDataWidgetAws(jObj.toString(), 3)
+                        dataWidgetAwsViewModel.insertionResult.observe(
+                            ProcessLifecycleOwner.get()
+                        ) { isSuccess ->
+                            if (isSuccess) {
+                                Log.d(LOG_WIDGET, "Sukses insert data widget aws3!")
+                            } else {
+                                Log.d(LOG_WIDGET, "Terjadi kesalahan, hubungi pengembang3")
+                            }
+                        }
+
+                        callback?.onDataUpdatedSuccessfully()
+                    } catch (e: JSONException) {
+                        Log.d(LOG_WIDGET, "Data error, hubungi pengembang3: $e")
+                        e.printStackTrace()
+                        callback?.onDataUpdatedSuccessfully()
+                    }
+                },
+                Response.ErrorListener { error ->
+                    Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi3: $error")
+                    callback?.onDataUpdatedSuccessfully()
+                }) {
+
+                override fun getParams(): Map<String, String> {
+                    val params: MutableMap<String, String> = HashMap()
+                    params["idws"] = try {
+                        prefManager.idStation.toString()
+                    } catch (e: Exception) {
+                        "0"
+                    }
+                    return params
+                }
+            }
+
+        strReq.retryPolicy = DefaultRetryPolicy(
+            5000,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+
+        Volley.newRequestQueue(context).add(strReq)
+    }
 
     fun checkDataWidgetAws2(
         context: Context,
@@ -65,7 +134,6 @@ object AppUtils {
                                 Log.d(LOG_WIDGET, "Sukses insert data widget aws2!")
                             } else {
                                 Log.d(LOG_WIDGET, "Terjadi kesalahan, hubungi pengembang2")
-                                dataWidgetAwsViewModel.deleteDataWidgetAws("2")
                             }
                         }
 
@@ -73,14 +141,12 @@ object AppUtils {
                     } catch (e: JSONException) {
                         Log.d(LOG_WIDGET, "Data error, hubungi pengembang2: $e")
                         e.printStackTrace()
-                        dataWidgetAwsViewModel.deleteDataWidgetAws("2")
-                        callback?.onDataUpdateFailed()
+                        callback?.onDataUpdatedSuccessfully()
                     }
                 },
                 Response.ErrorListener { error ->
                     Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi2: $error")
-                    dataWidgetAwsViewModel.deleteDataWidgetAws("2")
-                    callback?.onDataUpdateFailed()
+                    callback?.onDataUpdatedSuccessfully()
                 }) {
 
                 override fun getParams(): Map<String, String> {
@@ -110,7 +176,7 @@ object AppUtils {
             }
 
         strReq.retryPolicy = DefaultRetryPolicy(
-            90000,
+            5000,
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
@@ -142,23 +208,20 @@ object AppUtils {
                             if (isSuccess) {
                                 Log.d(LOG_WIDGET, "Sukses insert data widget aws1!")
                             } else {
-                                Log.d(LOG_WIDGET, "Terjadi kesalahan, hubungi pengembang2")
-                                dataWidgetAwsViewModel.deleteDataWidgetAws("1")
+                                Log.d(LOG_WIDGET, "Terjadi kesalahan, hubungi pengembang1")
                             }
                         }
 
                         callback?.onDataUpdatedSuccessfully()
                     } catch (e: JSONException) {
-                        Log.d(LOG_WIDGET, "Data error, hubungi pengembang2: $e")
+                        Log.d(LOG_WIDGET, "Data error, hubungi pengembang1: $e")
                         e.printStackTrace()
-                        dataWidgetAwsViewModel.deleteDataWidgetAws("1")
-                        callback?.onDataUpdateFailed()
+                        callback?.onDataUpdatedSuccessfully()
                     }
                 },
                 Response.ErrorListener { error ->
-                    Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi2: $error")
-                    dataWidgetAwsViewModel.deleteDataWidgetAws("1")
-                    callback?.onDataUpdateFailed()
+                    Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi1: $error")
+                    callback?.onDataUpdatedSuccessfully()
                 }) {
 
                 override fun getParams(): Map<String, String> {
@@ -173,7 +236,7 @@ object AppUtils {
             }
 
         strReq.retryPolicy = DefaultRetryPolicy(
-            90000,
+            5000,
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
@@ -192,27 +255,6 @@ object AppUtils {
 
         return con === NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)!!.state === NetworkInfo.State.CONNECTED
-    }
-
-    @SuppressLint("Recycle", "Range")
-    fun getFirstRowData(context: Context): List<Any> {
-        val selectQuery = "SELECT * FROM $dbTabStationList ORDER BY $db_id ASC"
-        val db = DBHelper(context).readableDatabase
-        val cursor: Cursor?
-        var firstRowData = listOf<Any>()
-
-        try {
-            cursor = db.rawQuery(selectQuery, null)
-            if (cursor.moveToFirst()) {
-                val id = cursor.getInt(cursor.getColumnIndex(db_id))
-                val location = cursor.getString(cursor.getColumnIndex(db_loc))
-                firstRowData = listOf(id, location)
-            }
-        } catch (e: SQLiteException) {
-            db.execSQL(selectQuery)
-        }
-
-        return firstRowData
     }
 
     fun getCountDataStationWs(context: Context): Int {
@@ -306,13 +348,17 @@ object AppUtils {
                                 prefManager.hexStation = jObj.getString("md5")
 
                                 if (arg!!.isNotEmpty()) {
-                                    val updateIntent1 = Intent(context, WeatherWidgetProvider::class.java)
+                                    val updateIntent1 = Intent(context, WidgetProviderFirst::class.java)
                                     updateIntent1.action = ACTION_REFRESH_CLICK
                                     context.sendBroadcast(updateIntent1)
 
                                     val updateIntent2 = Intent(context, WidgetProviderSecond::class.java)
                                     updateIntent2.action = ACTION_REFRESH_CLICK_SCD
                                     context.sendBroadcast(updateIntent2)
+
+                                    val updateIntent3 = Intent(context, WidgetProviderThird::class.java)
+                                    updateIntent3.action = ACTION_REFRESH_CLICK_THR
+                                    context.sendBroadcast(updateIntent3)
                                 }
                             } else {
                                 Log.d(LOG_STATION, "Terjadi kesalahan, hubungi pengembang")
