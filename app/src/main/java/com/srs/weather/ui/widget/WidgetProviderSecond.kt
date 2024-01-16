@@ -50,14 +50,24 @@ class WidgetProviderSecond : AppWidgetProvider(), AppUtils.DataWidgetResponse {
                 AppUtils.checkDataStationWs(context, "first")
             } else {
                 appWidgetIds.forEach { appWidgetId ->
-                    createUpdatePendingIntent(context, appWidgetId)
+                    createUpdatePendingIntent(context, appWidgetId, "update")
                 }
             }
         }
 
+        val views = RemoteViews(context.packageName, R.layout.widget_layout_second)
+        this.views = views
+
+        val app = context.applicationContext as Application
+        val viewModelFactory =
+            DataWidgetAwsViewModel.Factory(app, DataWidgetAwsRepository(context))
+        val dataWidgetAwsViewModel = ViewModelProvider(
+            ViewModelStore(),
+            viewModelFactory
+        )[DataWidgetAwsViewModel::class.java]
+        this.dataWidgetAwsViewModel = dataWidgetAwsViewModel
+
         if (intent?.action == AppUtils.ACTION_REFRESH_CLICK_SCD) {
-            val views = RemoteViews(context.packageName, R.layout.widget_layout_second)
-            this.views = views
             views.apply {
                 setViewVisibility(R.id.progressBarSc, View.VISIBLE)
                 setViewVisibility(R.id.refreshSc, View.GONE)
@@ -67,15 +77,6 @@ class WidgetProviderSecond : AppWidgetProvider(), AppUtils.DataWidgetResponse {
             }
 
             if (AppUtils.checkConnectionDevice(context)) {
-                val app = context.applicationContext as Application
-                val viewModelFactory =
-                    DataWidgetAwsViewModel.Factory(app, DataWidgetAwsRepository(context))
-                val dataWidgetAwsViewModel = ViewModelProvider(
-                    ViewModelStore(),
-                    viewModelFactory
-                )[DataWidgetAwsViewModel::class.java]
-                this.dataWidgetAwsViewModel = dataWidgetAwsViewModel
-
                 AppUtils.checkDataWidgetAws2(
                     app,
                     PrefManager(context),
@@ -92,6 +93,16 @@ class WidgetProviderSecond : AppWidgetProvider(), AppUtils.DataWidgetResponse {
                         appWidgetManager.updateAppWidget(appWidgetId, views)
                     }
                 }, 1000)
+            }
+        } else if (intent?.action == AppUtils.ACTION_UPDATE_INTERVAL_SCD) {
+            if (AppUtils.checkConnectionDevice(context)) {
+                AppUtils.checkDataWidgetAws2(
+                    app,
+                    PrefManager(context),
+                    dataWidgetAwsViewModel,
+                    this,
+                    "update"
+                )
             }
         }
     }
@@ -193,16 +204,18 @@ class WidgetProviderSecond : AppWidgetProvider(), AppUtils.DataWidgetResponse {
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
-    override fun onDataUpdatedSuccessfully() {
+    override fun onDataUpdatedSuccessfully(arg: String?) {
         val context = this.context
         val dataWidgetAwsViewModel = this.dataWidgetAwsViewModel
 
         if (context != null && dataWidgetAwsViewModel != null) {
             val views = RemoteViews(context.packageName, R.layout.widget_layout_second)
 
-            views.apply {
-                setViewVisibility(R.id.refreshSc, View.VISIBLE)
-                setViewVisibility(R.id.progressBarSc, View.GONE)
+            if (arg!!.isEmpty()) {
+                views.apply {
+                    setViewVisibility(R.id.refreshSc, View.VISIBLE)
+                    setViewVisibility(R.id.progressBarSc, View.GONE)
+                }
             }
 
             val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -230,9 +243,9 @@ class WidgetProviderSecond : AppWidgetProvider(), AppUtils.DataWidgetResponse {
         }
     }
 
-    private fun createUpdatePendingIntent(context: Context, appWidgetId: Int): PendingIntent {
+    private fun createUpdatePendingIntent(context: Context, appWidgetId: Int, arg: String? = ""): PendingIntent {
         val intent = Intent(context, WidgetProviderSecond::class.java)
-        intent.action = AppUtils.ACTION_REFRESH_CLICK_SCD
+        intent.action = if (arg!!.isEmpty()) AppUtils.ACTION_REFRESH_CLICK_SCD else AppUtils.ACTION_UPDATE_INTERVAL_SCD
         return PendingIntent.getBroadcast(
             context,
             appWidgetId,
@@ -254,7 +267,7 @@ class WidgetProviderSecond : AppWidgetProvider(), AppUtils.DataWidgetResponse {
 
     private fun schedulePeriodicUpdate(context: Context, appWidgetId: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val pendingIntent = createUpdatePendingIntent(context, appWidgetId)
+        val pendingIntent = createUpdatePendingIntent(context, appWidgetId, "update")
         val updateIntervalMillis = try {
             AppWidgetManager.getInstance(context)
                 .getAppWidgetInfo(appWidgetId)

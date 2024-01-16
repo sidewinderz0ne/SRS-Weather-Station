@@ -5,6 +5,7 @@
     android:minHeight="150dp"
     android:updatePeriodMillis="150000"
     android:initialLayout="@layout/widget_layout_third"
+    android:previewImage="@drawable/view_widget3"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen">
 </appwidget-provider>

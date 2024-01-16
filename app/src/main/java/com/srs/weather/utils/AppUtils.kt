@@ -42,6 +42,10 @@ object AppUtils {
     const val ACTION_REFRESH_CLICK_SCD = "$APPLICATION_ID.ACTION_REFRESH_CLICK_SCD"
     const val ACTION_REFRESH_CLICK_THR = "$APPLICATION_ID.ACTION_REFRESH_CLICK_THR"
 
+    const val ACTION_UPDATE_INTERVAL = "$APPLICATION_ID.ACTION_UPDATE_INTERVAL"
+    const val ACTION_UPDATE_INTERVAL_SCD = "$APPLICATION_ID.ACTION_UPDATE_INTERVAL_SCD"
+    const val ACTION_UPDATE_INTERVAL_THR = "$APPLICATION_ID.ACTION_UPDATE_INTERVAL_THR"
+
     fun formatDate(inputDateStr: String): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale("id", "ID"))
         val outputFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
@@ -53,7 +57,8 @@ object AppUtils {
         context: Context,
         prefManager: PrefManager,
         dataWidgetAwsViewModel: DataWidgetAwsViewModel,
-        callback: DataWidgetResponse? = null
+        callback: DataWidgetResponse? = null,
+        arg: String? = ""
     ) {
         val strReq: StringRequest =
             @SuppressLint("SetTextI18n")
@@ -77,16 +82,16 @@ object AppUtils {
                             }
                         }
 
-                        callback?.onDataUpdatedSuccessfully()
+                        callback?.onDataUpdatedSuccessfully(arg)
                     } catch (e: JSONException) {
                         Log.d(LOG_WIDGET, "Data error, hubungi pengembang3: $e")
                         e.printStackTrace()
-                        callback?.onDataUpdatedSuccessfully()
+                        callback?.onDataUpdatedSuccessfully(arg)
                     }
                 },
                 Response.ErrorListener { error ->
                     Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi3: $error")
-                    callback?.onDataUpdatedSuccessfully()
+                    callback?.onDataUpdatedSuccessfully(arg)
                 }) {
 
                 override fun getParams(): Map<String, String> {
@@ -113,7 +118,8 @@ object AppUtils {
         context: Context,
         prefManager: PrefManager,
         dataWidgetAwsViewModel: DataWidgetAwsViewModel,
-        callback: DataWidgetResponse? = null
+        callback: DataWidgetResponse? = null,
+        arg: String? = ""
     ) {
         val strReq: StringRequest =
             @SuppressLint("SetTextI18n")
@@ -137,16 +143,16 @@ object AppUtils {
                             }
                         }
 
-                        callback?.onDataUpdatedSuccessfully()
+                        callback?.onDataUpdatedSuccessfully(arg)
                     } catch (e: JSONException) {
                         Log.d(LOG_WIDGET, "Data error, hubungi pengembang2: $e")
                         e.printStackTrace()
-                        callback?.onDataUpdatedSuccessfully()
+                        callback?.onDataUpdatedSuccessfully(arg)
                     }
                 },
                 Response.ErrorListener { error ->
                     Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi2: $error")
-                    callback?.onDataUpdatedSuccessfully()
+                    callback?.onDataUpdatedSuccessfully(arg)
                 }) {
 
                 override fun getParams(): Map<String, String> {
@@ -188,7 +194,8 @@ object AppUtils {
         context: Context,
         prefManager: PrefManager,
         dataWidgetAwsViewModel: DataWidgetAwsViewModel,
-        callback: DataWidgetResponse? = null
+        callback: DataWidgetResponse? = null,
+        arg: String? = ""
     ) {
         val strReq: StringRequest =
             @SuppressLint("SetTextI18n")
@@ -212,16 +219,16 @@ object AppUtils {
                             }
                         }
 
-                        callback?.onDataUpdatedSuccessfully()
+                        callback?.onDataUpdatedSuccessfully(arg)
                     } catch (e: JSONException) {
                         Log.d(LOG_WIDGET, "Data error, hubungi pengembang1: $e")
                         e.printStackTrace()
-                        callback?.onDataUpdatedSuccessfully()
+                        callback?.onDataUpdatedSuccessfully(arg)
                     }
                 },
                 Response.ErrorListener { error ->
                     Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi1: $error")
-                    callback?.onDataUpdatedSuccessfully()
+                    callback?.onDataUpdatedSuccessfully(arg)
                 }) {
 
                 override fun getParams(): Map<String, String> {
@@ -349,15 +356,15 @@ object AppUtils {
 
                                 if (arg!!.isNotEmpty()) {
                                     val updateIntent1 = Intent(context, WidgetProviderFirst::class.java)
-                                    updateIntent1.action = ACTION_REFRESH_CLICK
+                                    updateIntent1.action = ACTION_UPDATE_INTERVAL
                                     context.sendBroadcast(updateIntent1)
 
                                     val updateIntent2 = Intent(context, WidgetProviderSecond::class.java)
-                                    updateIntent2.action = ACTION_REFRESH_CLICK_SCD
+                                    updateIntent2.action = ACTION_UPDATE_INTERVAL_SCD
                                     context.sendBroadcast(updateIntent2)
 
                                     val updateIntent3 = Intent(context, WidgetProviderThird::class.java)
-                                    updateIntent3.action = ACTION_REFRESH_CLICK_THR
+                                    updateIntent3.action = ACTION_UPDATE_INTERVAL_THR
                                     context.sendBroadcast(updateIntent3)
                                 }
                             } else {
@@ -425,7 +432,7 @@ object AppUtils {
     }
 
     interface DataWidgetResponse {
-        fun onDataUpdatedSuccessfully()
+        fun onDataUpdatedSuccessfully(arg: String? = "")
         fun onDataUpdateFailed()
     }
 }

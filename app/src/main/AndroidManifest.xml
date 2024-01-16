@@ -59,6 +59,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.srs.weather.ACTION_REFRESH_CLICK" />
+                <action android:name="com.srs.weather.ACTION_UPDATE_INTERVAL" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
@@ -71,6 +72,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.srs.weather.ACTION_REFRESH_CLICK_SCD" />
+                <action android:name="com.srs.weather.ACTION_UPDATE_INTERVAL_SCD" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
@@ -83,6 +85,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.srs.weather.ACTION_REFRESH_CLICK_THR" />
+                <action android:name="com.srs.weather.ACTION_UPDATE_INTERVAL_THR" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
