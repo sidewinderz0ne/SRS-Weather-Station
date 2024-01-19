@@ -22,6 +22,11 @@ import com.srs.weather.ui.viewModel.DataWidgetAwsViewModel
 import com.srs.weather.ui.widget.WidgetProviderFirst
 import com.srs.weather.ui.widget.WidgetProviderSecond
 import com.srs.weather.ui.widget.WidgetProviderThird
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -60,58 +65,72 @@ object AppUtils {
         callback: DataWidgetResponse? = null,
         arg: String? = ""
     ) {
-        val strReq: StringRequest =
-            @SuppressLint("SetTextI18n")
-            object : StringRequest(
-                Method.POST,
-                mainServer + "aws_misol/getLastSixHours.php",
-                Response.Listener { response ->
-                    try {
-                        val jObj = JSONObject(response)
+        val requestQueue = Volley.newRequestQueue(context)
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            try {
+                withTimeout(5000) {
+                    val strReq: StringRequest =
+                        @SuppressLint("SetTextI18n")
+                        object : StringRequest(
+                            Method.POST,
+                            mainServer + "aws_misol/getLastSixHours.php",
+                            Response.Listener { response ->
+                                try {
+                                    val jObj = JSONObject(response)
 
-                        Log.d(LOG_WIDGET, "Response success3!")
-                        dataWidgetAwsViewModel.deleteDataWidgetAws("3")
-                        dataWidgetAwsViewModel.insertDataWidgetAws(jObj.toString(), 3)
-                        dataWidgetAwsViewModel.insertionResult.observe(
-                            ProcessLifecycleOwner.get()
-                        ) { isSuccess ->
-                            if (isSuccess) {
-                                Log.d(LOG_WIDGET, "Sukses insert data widget aws3!")
-                            } else {
-                                Log.d(LOG_WIDGET, "Terjadi kesalahan, hubungi pengembang3")
+                                    Log.d(LOG_WIDGET, "Response success3!")
+                                    dataWidgetAwsViewModel.deleteDataWidgetAws("3")
+                                    dataWidgetAwsViewModel.insertDataWidgetAws(jObj.toString(), 3)
+                                    dataWidgetAwsViewModel.insertionResult.observe(
+                                        ProcessLifecycleOwner.get()
+                                    ) { isSuccess ->
+                                        if (isSuccess) {
+                                            Log.d(LOG_WIDGET, "Sukses insert data widget aws3!")
+                                        } else {
+                                            Log.d(
+                                                LOG_WIDGET,
+                                                "Terjadi kesalahan, hubungi pengembang3"
+                                            )
+                                        }
+                                    }
+
+                                    callback?.onDataUpdatedSuccessfully(arg)
+                                } catch (e: JSONException) {
+                                    Log.d(LOG_WIDGET, "Data error, hubungi pengembang3: $e")
+                                    e.printStackTrace()
+                                    callback?.onDataUpdatedSuccessfully(arg)
+                                }
+                            },
+                            Response.ErrorListener { error ->
+                                Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi3: $error")
+                                callback?.onDataUpdatedSuccessfully(arg)
+                            }) {
+
+                            override fun getParams(): Map<String, String> {
+                                val params: MutableMap<String, String> = HashMap()
+                                params["idws"] = try {
+                                    prefManager.idStation.toString()
+                                } catch (e: Exception) {
+                                    "0"
+                                }
+                                return params
                             }
                         }
 
-                        callback?.onDataUpdatedSuccessfully(arg)
-                    } catch (e: JSONException) {
-                        Log.d(LOG_WIDGET, "Data error, hubungi pengembang3: $e")
-                        e.printStackTrace()
-                        callback?.onDataUpdatedSuccessfully(arg)
-                    }
-                },
-                Response.ErrorListener { error ->
-                    Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi3: $error")
-                    callback?.onDataUpdatedSuccessfully(arg)
-                }) {
+                    strReq.retryPolicy = DefaultRetryPolicy(
+                        5000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                    )
 
-                override fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = HashMap()
-                    params["idws"] = try {
-                        prefManager.idStation.toString()
-                    } catch (e: Exception) {
-                        "0"
-                    }
-                    return params
+                    requestQueue.add(strReq)
                 }
+            } catch (e: TimeoutCancellationException) {
+                Log.d(LOG_WIDGET, "Request timed out after 5 seconds: $e")
+                callback?.onDataUpdatedSuccessfully(arg)
             }
-
-        strReq.retryPolicy = DefaultRetryPolicy(
-            5000,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-
-        Volley.newRequestQueue(context).add(strReq)
+        }
     }
 
     fun checkDataWidgetAws2(
@@ -121,73 +140,87 @@ object AppUtils {
         callback: DataWidgetResponse? = null,
         arg: String? = ""
     ) {
-        val strReq: StringRequest =
-            @SuppressLint("SetTextI18n")
-            object : StringRequest(
-                Method.POST,
-                mainServer + "aws_misol/getDataAwsLocation1.php",
-                Response.Listener { response ->
-                    try {
-                        val jObj = JSONObject(response)
+        val requestQueue = Volley.newRequestQueue(context)
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            try {
+                withTimeout(5000) {
+                    val strReq: StringRequest =
+                        @SuppressLint("SetTextI18n")
+                        object : StringRequest(
+                            Method.POST,
+                            mainServer + "aws_misol/getDataAwsLocation1.php",
+                            Response.Listener { response ->
+                                try {
+                                    val jObj = JSONObject(response)
 
-                        Log.d(LOG_WIDGET, "Response success2!")
-                        dataWidgetAwsViewModel.deleteDataWidgetAws("2")
-                        dataWidgetAwsViewModel.insertDataWidgetAws(jObj.toString(), 2)
-                        dataWidgetAwsViewModel.insertionResult.observe(
-                            ProcessLifecycleOwner.get()
-                        ) { isSuccess ->
-                            if (isSuccess) {
-                                Log.d(LOG_WIDGET, "Sukses insert data widget aws2!")
-                            } else {
-                                Log.d(LOG_WIDGET, "Terjadi kesalahan, hubungi pengembang2")
+                                    Log.d(LOG_WIDGET, "Response success2!")
+                                    dataWidgetAwsViewModel.deleteDataWidgetAws("2")
+                                    dataWidgetAwsViewModel.insertDataWidgetAws(jObj.toString(), 2)
+                                    dataWidgetAwsViewModel.insertionResult.observe(
+                                        ProcessLifecycleOwner.get()
+                                    ) { isSuccess ->
+                                        if (isSuccess) {
+                                            Log.d(LOG_WIDGET, "Sukses insert data widget aws2!")
+                                        } else {
+                                            Log.d(
+                                                LOG_WIDGET,
+                                                "Terjadi kesalahan, hubungi pengembang2"
+                                            )
+                                        }
+                                    }
+
+                                    callback?.onDataUpdatedSuccessfully(arg)
+                                } catch (e: JSONException) {
+                                    Log.d(LOG_WIDGET, "Data error, hubungi pengembang2: $e")
+                                    e.printStackTrace()
+                                    callback?.onDataUpdatedSuccessfully(arg)
+                                }
+                            },
+                            Response.ErrorListener { error ->
+                                Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi2: $error")
+                                callback?.onDataUpdatedSuccessfully(arg)
+                            }) {
+
+                            override fun getParams(): Map<String, String> {
+                                val params: MutableMap<String, String> = HashMap()
+                                params["idws1"] = try {
+                                    prefManager.idStation1.toString()
+                                } catch (e: Exception) {
+                                    "0"
+                                }
+                                params["idws2"] = try {
+                                    prefManager.idStation2.toString()
+                                } catch (e: Exception) {
+                                    "0"
+                                }
+                                params["idws3"] = try {
+                                    prefManager.idStation3.toString()
+                                } catch (e: Exception) {
+                                    "0"
+                                }
+                                params["idws4"] = try {
+                                    prefManager.idStation4.toString()
+                                } catch (e: Exception) {
+                                    "0"
+                                }
+                                return params
                             }
                         }
 
-                        callback?.onDataUpdatedSuccessfully(arg)
-                    } catch (e: JSONException) {
-                        Log.d(LOG_WIDGET, "Data error, hubungi pengembang2: $e")
-                        e.printStackTrace()
-                        callback?.onDataUpdatedSuccessfully(arg)
-                    }
-                },
-                Response.ErrorListener { error ->
-                    Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi2: $error")
-                    callback?.onDataUpdatedSuccessfully(arg)
-                }) {
+                    strReq.retryPolicy = DefaultRetryPolicy(
+                        5000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                    )
 
-                override fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = HashMap()
-                    params["idws1"] = try {
-                        prefManager.idStation1.toString()
-                    } catch (e: Exception) {
-                        "0"
-                    }
-                    params["idws2"] = try {
-                        prefManager.idStation2.toString()
-                    } catch (e: Exception) {
-                        "0"
-                    }
-                    params["idws3"] = try {
-                        prefManager.idStation3.toString()
-                    } catch (e: Exception) {
-                        "0"
-                    }
-                    params["idws4"] = try {
-                        prefManager.idStation4.toString()
-                    } catch (e: Exception) {
-                        "0"
-                    }
-                    return params
+                    requestQueue.add(strReq)
                 }
+            } catch (e: TimeoutCancellationException) {
+                Log.d(LOG_WIDGET, "Request timed out after 5 seconds: $e")
+                callback?.onDataUpdatedSuccessfully(arg)
             }
-
-        strReq.retryPolicy = DefaultRetryPolicy(
-            5000,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-
-        Volley.newRequestQueue(context).add(strReq)
+        }
     }
 
     fun checkDataWidgetAws1(
@@ -197,58 +230,72 @@ object AppUtils {
         callback: DataWidgetResponse? = null,
         arg: String? = ""
     ) {
-        val strReq: StringRequest =
-            @SuppressLint("SetTextI18n")
-            object : StringRequest(
-                Method.POST,
-                mainServer + "aws_misol/get_aws_last_data1.php",
-                Response.Listener { response ->
-                    try {
-                        val jObj = JSONObject(response)
+        val requestQueue = Volley.newRequestQueue(context)
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            try {
+                withTimeout(5000) {
+                    val strReq: StringRequest =
+                        @SuppressLint("SetTextI18n")
+                        object : StringRequest(
+                            Method.POST,
+                            mainServer + "aws_misol/get_aws_last_data1.php",
+                            Response.Listener { response ->
+                                try {
+                                    val jObj = JSONObject(response)
 
-                        Log.d(LOG_WIDGET, "Response success1!")
-                        dataWidgetAwsViewModel.deleteDataWidgetAws("1")
-                        dataWidgetAwsViewModel.insertDataWidgetAws(jObj.toString(), 1)
-                        dataWidgetAwsViewModel.insertionResult.observe(
-                            ProcessLifecycleOwner.get()
-                        ) { isSuccess ->
-                            if (isSuccess) {
-                                Log.d(LOG_WIDGET, "Sukses insert data widget aws1!")
-                            } else {
-                                Log.d(LOG_WIDGET, "Terjadi kesalahan, hubungi pengembang1")
+                                    Log.d(LOG_WIDGET, "Response success1!")
+                                    dataWidgetAwsViewModel.deleteDataWidgetAws("1")
+                                    dataWidgetAwsViewModel.insertDataWidgetAws(jObj.toString(), 1)
+                                    dataWidgetAwsViewModel.insertionResult.observe(
+                                        ProcessLifecycleOwner.get()
+                                    ) { isSuccess ->
+                                        if (isSuccess) {
+                                            Log.d(LOG_WIDGET, "Sukses insert data widget aws1!")
+                                        } else {
+                                            Log.d(
+                                                LOG_WIDGET,
+                                                "Terjadi kesalahan, hubungi pengembang1"
+                                            )
+                                        }
+                                    }
+
+                                    callback?.onDataUpdatedSuccessfully(arg)
+                                } catch (e: JSONException) {
+                                    Log.d(LOG_WIDGET, "Data error, hubungi pengembang1: $e")
+                                    e.printStackTrace()
+                                    callback?.onDataUpdatedSuccessfully(arg)
+                                }
+                            },
+                            Response.ErrorListener { error ->
+                                Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi1: $error")
+                                callback?.onDataUpdatedSuccessfully(arg)
+                            }) {
+
+                            override fun getParams(): Map<String, String> {
+                                val params: MutableMap<String, String> = HashMap()
+                                params["idws"] = try {
+                                    prefManager.idStation.toString()
+                                } catch (e: Exception) {
+                                    "0"
+                                }
+                                return params
                             }
                         }
 
-                        callback?.onDataUpdatedSuccessfully(arg)
-                    } catch (e: JSONException) {
-                        Log.d(LOG_WIDGET, "Data error, hubungi pengembang1: $e")
-                        e.printStackTrace()
-                        callback?.onDataUpdatedSuccessfully(arg)
-                    }
-                },
-                Response.ErrorListener { error ->
-                    Log.d(LOG_WIDGET, "Terjadi kesalahan koneksi1: $error")
-                    callback?.onDataUpdatedSuccessfully(arg)
-                }) {
+                    strReq.retryPolicy = DefaultRetryPolicy(
+                        5000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                    )
 
-                override fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = HashMap()
-                    params["idws"] = try {
-                        prefManager.idStation.toString()
-                    } catch (e: Exception) {
-                        "0"
-                    }
-                    return params
+                    requestQueue.add(strReq)
                 }
+            } catch (e: TimeoutCancellationException) {
+                Log.d(LOG_WIDGET, "Request timed out after 5 seconds: $e")
+                callback?.onDataUpdatedSuccessfully(arg)
             }
-
-        strReq.retryPolicy = DefaultRetryPolicy(
-            5000,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-
-        Volley.newRequestQueue(context).add(strReq)
+        }
     }
 
     fun checkConnectionDevice(context: Context): Boolean {
@@ -355,15 +402,18 @@ object AppUtils {
                                 prefManager.hexStation = jObj.getString("md5")
 
                                 if (arg!!.isNotEmpty()) {
-                                    val updateIntent1 = Intent(context, WidgetProviderFirst::class.java)
+                                    val updateIntent1 =
+                                        Intent(context, WidgetProviderFirst::class.java)
                                     updateIntent1.action = ACTION_UPDATE_INTERVAL
                                     context.sendBroadcast(updateIntent1)
 
-                                    val updateIntent2 = Intent(context, WidgetProviderSecond::class.java)
+                                    val updateIntent2 =
+                                        Intent(context, WidgetProviderSecond::class.java)
                                     updateIntent2.action = ACTION_UPDATE_INTERVAL_SCD
                                     context.sendBroadcast(updateIntent2)
 
-                                    val updateIntent3 = Intent(context, WidgetProviderThird::class.java)
+                                    val updateIntent3 =
+                                        Intent(context, WidgetProviderThird::class.java)
                                     updateIntent3.action = ACTION_UPDATE_INTERVAL_THR
                                     context.sendBroadcast(updateIntent3)
                                 }
