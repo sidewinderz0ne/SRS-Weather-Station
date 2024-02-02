@@ -3,12 +3,16 @@
 package com.srs.weather.utils
 
 import android.annotation.SuppressLint
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.android.volley.DefaultRetryPolicy
@@ -50,6 +54,25 @@ object AppUtils {
     const val ACTION_UPDATE_INTERVAL = "$APPLICATION_ID.ACTION_UPDATE_INTERVAL"
     const val ACTION_UPDATE_INTERVAL_SCD = "$APPLICATION_ID.ACTION_UPDATE_INTERVAL_SCD"
     const val ACTION_UPDATE_INTERVAL_THR = "$APPLICATION_ID.ACTION_UPDATE_INTERVAL_THR"
+
+    fun updateViewsWidget(
+        views: RemoteViews,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray,
+        goneViews: Int,
+        visibleViews: Int,
+        delay: Long
+    ) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            views.apply {
+                setViewVisibility(goneViews, View.GONE)
+                setViewVisibility(visibleViews, View.VISIBLE)
+            }
+            appWidgetIds.forEach { appWidgetId ->
+                appWidgetManager.updateAppWidget(appWidgetId, views)
+            }
+        }, delay)
+    }
 
     fun formatDate(inputDateStr: String): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale("id", "ID"))

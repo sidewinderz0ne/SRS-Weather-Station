@@ -81,16 +81,23 @@ class WidgetProviderFirst : AppWidgetProvider(), AppUtils.DataWidgetResponse {
                     dataWidgetAwsViewModel,
                     this
                 )
+                AppUtils.updateViewsWidget(
+                    views,
+                    appWidgetManager,
+                    appWidgetIds,
+                    R.id.progressBar,
+                    R.id.refresh,
+                    5000
+                )
             } else {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    views.apply {
-                        setViewVisibility(R.id.refresh, View.VISIBLE)
-                        setViewVisibility(R.id.progressBar, View.GONE)
-                    }
-                    appWidgetIds.forEach { appWidgetId ->
-                        appWidgetManager.updateAppWidget(appWidgetId, views)
-                    }
-                }, 1000)
+                AppUtils.updateViewsWidget(
+                    views,
+                    appWidgetManager,
+                    appWidgetIds,
+                    R.id.progressBar,
+                    R.id.refresh,
+                    1000
+                )
             }
         } else if (intent?.action == AppUtils.ACTION_UPDATE_INTERVAL) {
             if (AppUtils.checkConnectionDevice(context)) {
@@ -100,6 +107,14 @@ class WidgetProviderFirst : AppWidgetProvider(), AppUtils.DataWidgetResponse {
                     dataWidgetAwsViewModel,
                     this,
                     "update"
+                )
+                AppUtils.updateViewsWidget(
+                    views,
+                    appWidgetManager,
+                    appWidgetIds,
+                    R.id.progressBar,
+                    R.id.refresh,
+                    5000
                 )
             }
         }
@@ -164,12 +179,18 @@ class WidgetProviderFirst : AppWidgetProvider(), AppUtils.DataWidgetResponse {
                         } catch (e: Exception) {
                             0
                         }
+                        val forecastRf = try {
+                            jsonObject.getString("forecastRf")
+                        } catch (e: Exception) {
+                            "-"
+                        }
                         val resultRr = if (rrMonth in 60..300) {
                             "Disarankan"
                         } else {
                             "Tidak Disarankan"
                         }
 
+                        views.setTextViewText(R.id.forecastRf, "Cuaca besok: $forecastRf")
                         views.setTextViewText(R.id.weatherTemperature, temperature)
                         views.setTextViewText(R.id.rainfallRate, rainRate)
                         views.setTextViewText(R.id.humidity, humidity)
@@ -249,9 +270,14 @@ class WidgetProviderFirst : AppWidgetProvider(), AppUtils.DataWidgetResponse {
         }
     }
 
-    private fun createUpdatePendingIntent(context: Context, appWidgetId: Int, arg: String? = ""): PendingIntent {
+    private fun createUpdatePendingIntent(
+        context: Context,
+        appWidgetId: Int,
+        arg: String? = ""
+    ): PendingIntent {
         val intent = Intent(context, WidgetProviderFirst::class.java)
-        intent.action = if (arg!!.isEmpty()) AppUtils.ACTION_REFRESH_CLICK else AppUtils.ACTION_UPDATE_INTERVAL
+        intent.action =
+            if (arg!!.isEmpty()) AppUtils.ACTION_REFRESH_CLICK else AppUtils.ACTION_UPDATE_INTERVAL
         return PendingIntent.getBroadcast(
             context,
             appWidgetId,
@@ -268,6 +294,7 @@ class WidgetProviderFirst : AppWidgetProvider(), AppUtils.DataWidgetResponse {
                 setViewVisibility(R.id.progressBar, View.GONE)
             }
 
+            views.setTextViewText(R.id.forecastRf, "Cuaca besok: -")
             views.setTextViewText(R.id.weatherTemperature, "-")
             views.setTextViewText(R.id.rainfallRate, "-")
             views.setTextViewText(R.id.humidity, "-")

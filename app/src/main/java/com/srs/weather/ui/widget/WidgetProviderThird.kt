@@ -85,16 +85,23 @@ class WidgetProviderThird : AppWidgetProvider(), AppUtils.DataWidgetResponse {
                     dataWidgetAwsViewModel,
                     this
                 )
+                AppUtils.updateViewsWidget(
+                    views,
+                    appWidgetManager,
+                    appWidgetIds,
+                    R.id.pbRefreshWidget,
+                    R.id.ivRefreshWidget,
+                    5000
+                )
             } else {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    views.apply {
-                        setViewVisibility(R.id.ivRefreshWidget, View.VISIBLE)
-                        setViewVisibility(R.id.pbRefreshWidget, View.GONE)
-                    }
-                    appWidgetIds.forEach { appWidgetId ->
-                        appWidgetManager.updateAppWidget(appWidgetId, views)
-                    }
-                }, 1000)
+                AppUtils.updateViewsWidget(
+                    views,
+                    appWidgetManager,
+                    appWidgetIds,
+                    R.id.pbRefreshWidget,
+                    R.id.ivRefreshWidget,
+                    1000
+                )
             }
         } else if (intent?.action == AppUtils.ACTION_UPDATE_INTERVAL_THR) {
             if (AppUtils.checkConnectionDevice(context)) {
@@ -104,6 +111,14 @@ class WidgetProviderThird : AppWidgetProvider(), AppUtils.DataWidgetResponse {
                     dataWidgetAwsViewModel,
                     this,
                     "update"
+                )
+                AppUtils.updateViewsWidget(
+                    views,
+                    appWidgetManager,
+                    appWidgetIds,
+                    R.id.pbRefreshWidget,
+                    R.id.ivRefreshWidget,
+                    5000
                 )
             }
         }
