@@ -6,9 +6,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.View
+import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.URLUtil
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
@@ -31,13 +35,16 @@ class WebView : AppCompatActivity() {
         // Enable file access
         webView.settings.allowFileAccess = true
         // Set the User-Agent string
-        webView.settings.userAgentString = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+        webView.settings.userAgentString =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
         // Enable file downloads
         webView.settings.allowFileAccess = true
         webView.settings.allowFileAccessFromFileURLs = true
         webView.settings.allowUniversalAccessFromFileURLs = true
         //webView.settings.setAppCachePath(cacheDir.path)
+        webView.settings.forceDark = WebSettings.FORCE_DARK_AUTO
         webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
         //webView.settings.setAppCacheEnabled(true)
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         webView.loadUrl(urlDashboardAWS) // Load your desired URL
@@ -48,7 +55,7 @@ class WebView : AppCompatActivity() {
             request.setMimeType(mimetype)
             //------------------------COOKIE!!------------------------
             val cookies: String? = CookieManager.getInstance().getCookie(url)
-            if(cookies != null) {
+            if (cookies != null) {
                 request.addRequestHeader("cookie", cookies)
             }
             //------------------------COOKIE!!------------------------
@@ -80,18 +87,41 @@ class WebView : AppCompatActivity() {
                 autoLogin()
             }
         }
+
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
+                Log.d(
+                    "WebViewConsole",
+                    "${consoleMessage.message()} -- From line ${consoleMessage.lineNumber()} of ${consoleMessage.sourceId()}"
+                )
+                return true
+            }
+        }
     }
 
     private fun autoLogin() {
         val email = PrefManager(this).email!!
         val password = PrefManager(this).password!!
 
-        val js = "javascript:(function(){" +
-                "document.getElementById('username').value = '$email';" +
-                "document.getElementById('password').value = '$password';" +
-                "document.getElementById('loginButton').click();" +
-                "})()"
-        webView.evaluateJavascript(js) {}
+        val js = """
+        javascript:(function() {
+            function attemptLogin() {
+                let emailField = document.getElementById('email');
+                let passwordField = document.getElementById('password');
+                let loginButton = document.getElementById('loginButton');
+
+                if (emailField && passwordField && loginButton) {
+                    emailField.value = '$email';
+                    passwordField.value = '$password';
+                    loginButton.click();
+                } else {
+                    setTimeout(attemptLogin, 500);
+                }
+            }
+            attemptLogin();
+        })()
+    """
+        webView.evaluateJavascript(js, null)
     }
 
     // Handle the back button press event to navigate back in the WebView history

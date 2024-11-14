@@ -32,10 +32,6 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import androidx.biometric.BiometricPrompt
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
 import com.srs.weather.BuildConfig
 import com.srs.weather.R
 import com.srs.weather.utils.PrefManager
@@ -47,9 +43,6 @@ class Login : AppCompatActivity() {
     var promptInfo: BiometricPrompt.PromptInfo? = null
     private var biometricPrompt: BiometricPrompt? = null
 
-    private var appUpdate: AppUpdateManager? = null
-    private val REQUEST_CODE = 100
-
     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "UNNECESSARY_SAFE_CALL")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +51,6 @@ class Login : AppCompatActivity() {
         setTampilan()
         initBt()
         initFp()
-
-        appUpdate = AppUpdateManagerFactory.create(this)
-        checkUpdateApp()
     }
 
     private fun initFp(){
@@ -301,26 +291,5 @@ class Login : AppCompatActivity() {
                 Looper.loop()
             }
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        inProgressUpdate()
-    }
-
-    private fun checkUpdateApp() {
-        appUpdate?.appUpdateInfo?.addOnSuccessListener { updateInfo->
-            if (updateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && updateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                appUpdate?.startUpdateFlowForResult(updateInfo, AppUpdateType.IMMEDIATE, this, REQUEST_CODE)
-            }
-        }
-    }
-
-    private fun inProgressUpdate() {
-        appUpdate?.appUpdateInfo?.addOnSuccessListener { updateInfo->
-            if (updateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                appUpdate?.startUpdateFlowForResult(updateInfo, AppUpdateType.IMMEDIATE, this, REQUEST_CODE)
-            }
-        }
     }
 }
